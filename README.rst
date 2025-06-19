@@ -4,7 +4,7 @@ djangocms-stories
 
 |PyPiVersion| |PyVersion| |TestCoverage| |License|
 
-django CMS stieries application - Tell your story in multilingual posts, using the full power of django CMS placeholders.
+django CMS stories application - Tell your story in multilingual posts, using the full power of django CMS placeholders.
 
 Supported Django versions:
 
