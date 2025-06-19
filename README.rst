@@ -1,85 +1,112 @@
-==============
-djangocms-blog
-==============
+=================
+djangocms-stories
+=================
 
-|Gitter| |PyPiVersion| |PyVersion| |GAStatus| |TestCoverage| |CodeClimate| |License|
+|PyPiVersion| |PyVersion| |TestCoverage| |License|
 
-django CMS blog application - Support for multilingual posts, placeholders, social network meta tags and configurable apphooks.
+django CMS stieries application - Tell your story in multilingual posts, using the full power of django CMS placeholders.
 
 Supported Django versions:
 
-* Django 3.2 - 4.2
+* Django 4.2
 
 Supported django CMS versions:
 
-* django CMS 3.9 - 3.11+
+* django CMS 5.0+
+
+djangocms-stories is inspired by `Nephila's <https://github.com/nephila>`_ excellent
+`djangocms-blog <https://github.com/nephila/djangocms-blog>`_, but has been reimagined
+to align with django CMS's new philosophy since version 4: "The design philosophy of
+django CMS is to solve something complex with many simple things." This means
+djangocms-stories focuses on modularity, simplicity, and seamless integration with the
+latest django CMS features, while still providing powerful storytelling capabilities.
 
 ************
 Installation
 ************
 
-See `installation documentation`_
+To install the latest version directly from GitHub, run:
+
+.. code-block:: bash
+
+    pip install git+https://github.com/fsbraun/djangocms-stories.git
+
+Add ``djangocms_stories`` to your ``INSTALLED_APPS`` in your Django project's ``settings.py``:
+
+.. code-block:: python
+
+    INSTALLED_APPS = [
+        # ...
+        'djangocms_stories',
+        'parler',  # if not already included
+        'sortedm2m',  # if not already included
+
+        # For now, but probably not needed in the future
+        'taggit',
+        'taggit_autosuggest',
+        'meta',
+        # ...
+    ]
+
+To use taggit's autosuggest feature, add their URLS in ``urls.py``:
+
+.. code-block:: python
+
+    url_patterns += [path('taggit_autosuggest/', include('taggit_autosuggest.urls'))]
+
 
 ********
 Features
 ********
 
-See `features documentation`_  for all the features details
-
-* Support for `django-app-enabler`_ autoconfiguration.
 * Placeholder content editing
 * Frontend editing using django CMS frontend editor
 * Multilingual support using django-parler
-* Twitter cards, Open Graph and Google+ snippets meta tags
 * Optional simpler TextField-based content editing
 * Multisite (posts can be visible in one or more Django sites on the same project)
 * Per-Apphook configuration
 * Configurable permalinks
-* Configurable django CMS menu
+* Configurable user navigation (django CMS menu)
 * Per-Apphook templates set
-* Auto Apphook setup
 * Django sitemap framework
 * django CMS Wizard integration
 * Desktop notifications
-* Liveblog
 
 *****************************
-Known djangocms-blog websites
+Migrating from djangocms-blog
 *****************************
 
-See DjangoPackages for an updated list https://www.djangopackages.com/packages/p/djangocms-blog/
+If you are migrating from djangocms-blog follow the steps below (at your own risk - the
+migration is under development). Be sure to backup your database before.
 
-.. _features documentation: http://djangocms-blog.readthedocs.io/en/latest/features/
-.. _installation documentation: http://djangocms-blog.readthedocs.io/en/latest/installation.html
-.. _permalinks: http://djangocms-blog.readthedocs.io/en/latest/features/permalinks.html
-.. _cmsplugin-filer migration documentation: http://djangocms-blog.readthedocs.io/en/latest/cmsplugin_filer.html
-.. _django-app-enabler: https://github.com/nephila/django-app-enabler
+1. Uninstall djangocsms-blog: ``pip uninstall djangocms-blog``
+2. Install djangocms-stories ``pip install git+https://github.com/fsbraun/djangocms-stories.git``
+3. Add ``"djangocms_stories"`` to your installed apps. Do **not** remove djangocms-blog.
+4. Run ``./manage.py migrate djangocms_stories``. This in migration 0002 will move existing content
+   from djangocms-blog to djangocms-stories and delete djangocms-blogs database tables.
+5. Remove ``"djangocms_blog"`` from your installed apps.
+
+************
+Contributing
+************
+
+Contributions to ``djangocms-text`` are welcome! Please read our
+`contributing guidelines <https://docs.django-cms.org/en/stable/contributing/index.html>`_
+to get started.
 
 
-.. |Gitter| image:: https://img.shields.io/badge/GITTER-join%20chat-brightgreen.svg?style=flat-square
-    :target: https://gitter.im/nephila/applications
-    :alt: Join the Gitter chat
-
-.. |PyPiVersion| image:: https://img.shields.io/pypi/v/djangocms-blog.svg?style=flat-square
-    :target: https://pypi.python.org/pypi/djangocms-blog
+.. |PyPiVersion| image:: https://img.shields.io/pypi/v/djangocms-stories.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/djangocms-stories
     :alt: Latest PyPI version
 
 .. |PyVersion| image:: https://img.shields.io/pypi/pyversions/djangocms-blog.svg?style=flat-square
-    :target: https://pypi.python.org/pypi/djangocms-blog
+    :target: https://pypi.python.org/pypi/djangocms-stories
     :alt: Python versions
 
-.. |GAStatus| image:: https://github.com/nephila/djangocms-blog/workflows/Tox%20tests/badge.svg
-    :target: https://github.com/nephila/djangocms-blog
-    :alt: Latest CI build status
-
-.. |TestCoverage| image:: https://img.shields.io/coveralls/nephila/djangocms-blog/master.svg?style=flat-square
-    :target: https://coveralls.io/r/nephila/djangocms-blog?branch=master
+.. |TestCoverage| image:: https://img.shields.io/coveralls/fsbraun/djangocms-stories/master.svg?style=flat-square
+    :target: https://coveralls.io/r/django-cms/djangocms-stories?branch=main
     :alt: Test coverage
 
-.. |License| image:: https://img.shields.io/github/license/nephila/djangocms-blog.svg?style=flat-square
-   :target: https://pypi.python.org/pypi/djangocms-blog/
+.. |License| image:: https://img.shields.io/github/license/fsbraun/djangocms-stories.svg?style=flat-square
+   :target: https://pypi.python.org/pypi/djangocms-stories/
     :alt: License
-
-.. |CodeClimate| image:: https://codeclimate.com/github/nephila/djangocms-blog/badges/gpa.svg?style=flat-square
-   :target: https://codeclimate.com/github/nephila/djangocms-blog
-   :alt: Code Climate
