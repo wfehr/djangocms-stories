@@ -11,8 +11,11 @@ djangocms-stories is inspired by `Nephila's <https://github.com/nephila>`_ excel
 `djangocms-blog <https://github.com/nephila/djangocms-blog>`_, but has been reimagined
 to align with django CMS's new philosophy since version 4: "The design philosophy of
 django CMS is to solve something complex with many simple things." This means
-djangocms-stories focuses on modularity, simplicity, and seamless integration with the
-latest django CMS features, while still providing powerful storytelling capabilities.
+djangocms-stories focuses on core features and separates out features that can be 
+shared between django CMS apps. 
+
+djangocms-stories provides a lean foundation for storytelling that can be composed with 
+other specialized django CMS applications.
 
 ************
 Installation
