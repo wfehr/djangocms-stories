@@ -5,17 +5,17 @@ djangocms-stories
 | |PyPiVersion| |TestCoverage| |License|
 | |PyVersion| |DjVersion| |CmsVersion|
 
-django CMS stories application - Tell your story in multilingual posts, using the full 
+django CMS stories application - Tell your story in multilingual posts, using the full
 power of django CMS placeholders.
 
 djangocms-stories is inspired by `Nephila's <https://github.com/nephila>`_ excellent
 `djangocms-blog <https://github.com/nephila/djangocms-blog>`_, but has been aligned
 with django CMS's new philosophy since version 4: "The design philosophy of
 django CMS is to solve something complex with many simple things." This means
-djangocms-stories focuses on core features and separates out features that can be 
+djangocms-stories focuses on core features and separates out features that can be
 shared between django CMS apps.
 
-djangocms-stories provides a lean foundation for storytelling that can be composed with 
+djangocms-stories provides a lean foundation for storytelling that can be composed with
 other specialized django CMS applications.
 
 ************
@@ -108,8 +108,8 @@ to get started.
     :target: https://pypi.python.org/pypi/djangocms-stories
     :alt: django CMS versions
 
-.. |TestCoverage| image:: https://img.shields.io/coveralls/fsbraun/djangocms-stories/master.svg?style=flat-square
-    :target: https://coveralls.io/r/fsbraun/djangocms-stories?branch=main
+.. |TestCoverage| image:: https://codecov.io/gh/fsbraun/djangocms-stories/graph/badge.svg?token=O64yNt6pgo
+    :target: https://codecov.io/gh/fsbraun/djangocms-stories
     :alt: Test coverage
 
 .. |License| image:: https://img.shields.io/github/license/fsbraun/djangocms-stories.svg?style=flat-square
