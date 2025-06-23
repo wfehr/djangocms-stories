@@ -109,7 +109,7 @@ to get started.
     :alt: django CMS versions
 
 .. |TestCoverage| image:: https://img.shields.io/coveralls/fsbraun/djangocms-stories/master.svg?style=flat-square
-    :target: https://coveralls.io/r/django-cms/djangocms-stories?branch=main
+    :target: https://coveralls.io/r/fsbraun/djangocms-stories?branch=main
     :alt: Test coverage
 
 .. |License| image:: https://img.shields.io/github/license/fsbraun/djangocms-stories.svg?style=flat-square
