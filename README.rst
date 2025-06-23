@@ -2,24 +2,21 @@
 djangocms-stories
 =================
 
-|PyPiVersion| |PyVersion| |TestCoverage| |License|
+| |PyPiVersion| |TestCoverage| |License|
+| |PyVersion| |DjVersion| |CmsVersion|
 
-django CMS stories application - Tell your story in multilingual posts, using the full power of django CMS placeholders.
-
-Supported Django versions:
-
-* Django 4.2
-
-Supported django CMS versions:
-
-* django CMS 5.0+
+django CMS stories application - Tell your story in multilingual posts, using the full 
+power of django CMS placeholders.
 
 djangocms-stories is inspired by `Nephila's <https://github.com/nephila>`_ excellent
-`djangocms-blog <https://github.com/nephila/djangocms-blog>`_, but has been reimagined
-to align with django CMS's new philosophy since version 4: "The design philosophy of
+`djangocms-blog <https://github.com/nephila/djangocms-blog>`_, but has been aligned
+with django CMS's new philosophy since version 4: "The design philosophy of
 django CMS is to solve something complex with many simple things." This means
-djangocms-stories focuses on modularity, simplicity, and seamless integration with the
-latest django CMS features, while still providing powerful storytelling capabilities.
+djangocms-stories focuses on core features and separates out features that can be 
+shared between django CMS apps.
+
+djangocms-stories provides a lean foundation for storytelling that can be composed with 
+other specialized django CMS applications.
 
 ************
 Installation
@@ -99,9 +96,17 @@ to get started.
     :target: https://pypi.python.org/pypi/djangocms-stories
     :alt: Latest PyPI version
 
-.. |PyVersion| image:: https://img.shields.io/pypi/pyversions/djangocms-blog.svg?style=flat-square
+.. |PyVersion| image:: https://img.shields.io/pypi/pyversions/djangocms-stories.svg?style=flat-square
     :target: https://pypi.python.org/pypi/djangocms-stories
     :alt: Python versions
+
+.. |DjVersion| image:: https://img.shields.io/pypi/frameworkversions/django/djangocms-stories.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/djangocms-stories
+    :alt: Django versions
+
+.. |CmsVersion| image:: https://img.shields.io/pypi/frameworkversions/django-cms/djangocms-stories.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/djangocms-stories
+    :alt: django CMS versions
 
 .. |TestCoverage| image:: https://img.shields.io/coveralls/fsbraun/djangocms-stories/master.svg?style=flat-square
     :target: https://coveralls.io/r/django-cms/djangocms-stories?branch=main
