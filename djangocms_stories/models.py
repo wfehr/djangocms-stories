@@ -1,6 +1,6 @@
 import hashlib
 
-from cms.models import CMSPlugin, ContentAdminManager, PlaceholderRelationField
+from cms.models import CMSPlugin, PlaceholderRelationField
 from cms.utils.placeholder import get_placeholder_from_slot
 from django.apps import apps
 from django.conf import settings as dj_settings
@@ -14,12 +14,13 @@ from django.db.models import F, Q
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.urls import NoReverseMatch, reverse
-from django.utils import timezone, translation
+from django.utils import translation
 from django.utils.encoding import force_bytes, force_str
 from django.utils.functional import cached_property
 from django.utils.html import strip_tags
 from django.utils.timezone import now
 from django.utils.translation import get_language, gettext, gettext_lazy as _
+from easy_thumbnails.files import get_thumbnailer
 from filer.fields.image import FilerImageField
 from filer.models import ThumbnailOption
 from menus.menu_pool import menu_pool
@@ -42,7 +43,6 @@ BLOG_ALLOW_UNICODE_SLUGS = get_setting("ALLOW_UNICODE_SLUGS")
 thumbnail_model = f"{ThumbnailOption._meta.app_label}.{ThumbnailOption.__name__}"
 
 
-
 # HTMLField is a custom field that allows to use a rich text editor
 # Probe for djangocms_text first, then for djangocms_text_ckeditor
 # and finally fallback to a simple textarea
@@ -51,6 +51,7 @@ if apps.is_installed("djangocms_text"):
 elif apps.is_installed("djangocms_text_ckeditor"):
     from djangocms_text_ckeditor.fields import HTMLField
 else:
+    from django import forms
 
     class HTMLField(models.TextField):
         def __init__(self, *args, **kwargs):
@@ -286,9 +287,7 @@ class Post(models.Model):
         verbose_name=_("Site(s)"),
         blank=True,
         help_text=_(
-            "Select sites in which to show the post. "
-            "If none is set it will be "
-            "visible in all the configured sites."
+            "Select sites in which to show the post. If none is set it will be visible in all the configured sites."
         ),
     )
     app_config = models.ForeignKey(
@@ -434,9 +433,7 @@ class Post(models.Model):
             if "<str:slug>" in urlconf or "<slug:slug>" in urlconf:
                 kwargs["slug"] = self.safe_translation_getter("slug", language_code=lang, any_language=True)  # NOQA
             if "<slug:category>" in urlconf or "<str:category>" in urlconf:
-                kwargs["category"] = category.safe_translation_getter(
-                    "slug", language_code=lang, any_language=True
-                )  # NOQA
+                kwargs["category"] = category.safe_translation_getter("slug", language_code=lang, any_language=True)  # NOQA
             try:
                 return reverse(
                     "%s:post-detail" % self.app_config.namespace, kwargs=kwargs, current_app=self.app_config.namespace

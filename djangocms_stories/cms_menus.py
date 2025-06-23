@@ -3,13 +3,12 @@ import logging
 from cms.apphook_pool import apphook_pool
 from cms.menu_bases import CMSAttachMenu
 from django.contrib.sites.shortcuts import get_current_site
-from django.db.models.signals import post_delete, post_save
 from django.urls import resolve
 from django.utils.translation import get_language_from_request, gettext_lazy as _
 from menus.base import Modifier, NavigationNode
 from menus.menu_pool import menu_pool
 
-from .models import PostCategory, StoriesConfig, Post, PostContent
+from .models import PostCategory, StoriesConfig, PostContent
 from .settings import MENU_TYPE_CATEGORIES, MENU_TYPE_COMPLETE, MENU_TYPE_NONE, MENU_TYPE_POSTS, get_setting
 
 logger = logging.getLogger(__name__)
@@ -47,7 +46,7 @@ class PostCategoryMenu(CMSAttachMenu):
         if self.instance:
             if not self._config.get(self.instance.application_namespace, False):
                 try:
-                    self._config[self.instance.application_namespace] = BlogConfig.objects.get(
+                    self._config[self.instance.application_namespace] = StoriesConfig.objects.get(
                         namespace=self.instance.application_namespace
                     )
                 except StoriesConfig.DoesNotExist as e:

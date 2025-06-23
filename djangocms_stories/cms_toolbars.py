@@ -115,7 +115,9 @@ class BlogToolbar(CMSToolbar):
                 admin_menu.add_break()
             # Entry list menu entry
             if current_config:
-                url = admin_reverse("djangocms_stories_post_changelist") + f"?app_config__id__exact={current_config.pk}"
+                url = (
+                    admin_reverse("djangocms_stories_post_changelist") + f"?app_config__id__exact={current_config.pk}"
+                )
                 admin_menu.add_sideframe_item(
                     _("All entries"),
                     url=url,

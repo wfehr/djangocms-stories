@@ -1,6 +1,5 @@
 import os.path
 
-from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404

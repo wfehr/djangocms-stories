@@ -2,7 +2,7 @@ from cms.utils import get_language_list
 from django.contrib.sitemaps import Sitemap
 from django.urls.exceptions import NoReverseMatch
 
-from ..models import Post, PostContent
+from ..models import PostContent
 from ..settings import get_setting
 
 

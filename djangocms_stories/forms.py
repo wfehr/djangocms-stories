@@ -23,9 +23,9 @@ class ConfigFormBase:
         if getattr(self.instance, "app_config_id", None):
             return self.instance.app_config
         elif "app_config" in self.initial:
-            return BlogConfig.objects.get(pk=self.initial["app_config"])
+            return StoriesConfig.objects.get(pk=self.initial["app_config"])
         elif self.data.get("app_config", None):
-            return BlogConfig.objects.get(pk=self.data["app_config"])
+            return StoriesConfig.objects.get(pk=self.data["app_config"])
         return None
 
 

@@ -1,85 +1,88 @@
 [build-system]
-requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+requires = [ "hatchling" ]
 
 [project]
 name = "djangocms-stories"
-dynamic = ["version"]
 description = "The versatile stories and blog application for django CMS 4+"
 readme = "README.rst"
 license = "BSD-3-Clause"
-requires-python = ">=3.9"
 authors = [
-    { name = "Iacopo Spalletti", email = "i.spalletti@nephila.it" },
+  { name = "Iacopo Spalletti", email = "i.spalletti@nephila.it" },
 ]
+requires-python = ">=3.9"
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Framework :: Django",
-    "Framework :: Django :: 4.2",
-    "Framework :: Django :: 5.0",
-    "Framework :: Django :: 5.1",
-    "Framework :: Django :: 5.2",
-    "Framework :: Django CMS :: 4.1",
-    "Framework :: Django CMS :: 5.0",
-    "License :: OSI Approved :: BSD License",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
+  "Development Status :: 5 - Production/Stable",
+  "Framework :: Django",
+  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.0",
+  "Framework :: Django :: 5.1",
+  "Framework :: Django :: 5.2",
+  "Framework :: Django CMS :: 4.1",
+  "Framework :: Django CMS :: 5.0",
+  "License :: OSI Approved :: BSD License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
+dynamic = [ "version" ]
 dependencies = [
-    "django-cms>=4.1.0rc3",
-    "django-filer>=2.0",
-    "django-meta>=2.0",
-    "django-parler>=2.0",
-    "django-sortedm2m",
-    "django-taggit-autosuggest",
-    "django-taggit-templatetags",
-    "django-taggit>=1.0",
-    "easy-thumbnails>=2.4.1",
-    "lxml",
-    "pytz",
+  "django-cms>=4.1",
+  "django-filer>=2",
+  "django-meta>=2",
+  "django-parler>=2",
+  "django-sortedm2m",
+  "django-taggit>=1",
+  "django-taggit-autosuggest",
+  "django-taggit-templatetags",
+  "easy-thumbnails>=2.4.1",
+  "lxml",
+  "pytz",
 ]
 
-[project.optional-dependencies]
-docs = [
-    "django<5.0",
+optional-dependencies.docs = [
+  "django<5",
 ]
-taggit-helpers = [
-    "django-taggit-helpers",
+optional-dependencies.taggit-helpers = [
+  "django-taggit-helpers",
 ]
-test = [
-    "coverage",
-    "coveralls>=2.0",
-    "pysolr",
-    "django-taggit-helpers",
-    "djangocms-video",
-    "djangocms-text",
-    "pytest",
-    "pytest-django",
-    "pytest-asyncio",
+optional-dependencies.test = [
+  "coverage",
+  "coveralls>=2",
+  "django-taggit-helpers",
+  "djangocms-text",
+  "djangocms-video",
+  "pysolr",
+  "pytest",
+  "pytest-asyncio",
+  "pytest-django",
 ]
-
-[project.urls]
-Documentation = "https://djangocms-blog.readthedocs.io/"
-Homepage = "https://github.com/nephila/djangocms-blog"
-
-[tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "tests.settings"
-pythonpath = ["."]
+urls.Documentation = "https://djangocms-blog.readthedocs.io/"
+urls.Homepage = "https://github.com/nephila/djangocms-blog"
 
 [tool.hatch.version]
 path = "djangocms_stories/__init__.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "/djangocms_blog",
-    "/djangocms_stories",
+  "/djangocms_blog",
+  "/djangocms_stories",
 ]
 
 [tool.black]
 line-length = 119
-target-version = ["py39"]
+target-version = [ "py39" ]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 119
+exclude = [ "djangocms_stories/migrations" ]
+lint.ignore = [  ]
+lint.mccabe.max-complexity = 5
 
 [tool.isort]
 profile = "black"
@@ -92,10 +95,6 @@ line_length = 119
 multi_line_output = 3
 use_parentheses = true
 
-[tool.ruff]
-ignore = []
-line-length = 119
-target-version = "py39"
-
-[tool.ruff.mccabe]
-max-complexity = 5
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+pythonpath = [ "." ]

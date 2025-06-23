@@ -6,7 +6,6 @@ from cms.admin.utils import GrouperModelAdmin
 from cms.models import ValidationError
 from cms.utils import get_language_from_request
 from cms.utils.urlutils import admin_reverse
-from django.apps import apps
 from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin import helpers
@@ -18,7 +17,7 @@ from django.db import models
 from django.db.models import Prefetch, signals
 from django.http import Http404, HttpResponseRedirect
 from django.template.response import TemplateResponse
-from django.urls import NoReverseMatch, path
+from django.urls import path
 from django.utils.translation import gettext_lazy as _, ngettext as __
 from django.views.generic import RedirectView
 from parler.admin import TranslatableAdmin
@@ -209,8 +208,8 @@ class ModelAppHookConfig:
                 pass
         if not config and "app_config" in request.GET:
             try:
-                config = BlogConfig.objects.get(pk=request.GET["app_config"])
-            except BlogConfig.DoesNotExist:  # pragma: no cover
+                config = StoriesConfig.objects.get(pk=request.GET["app_config"])
+            except StoriesConfig.DoesNotExist:  # pragma: no cover
                 pass
         if config:
             return_value = getattr(config, name)
@@ -263,8 +262,8 @@ class ModelAppHookConfig:
             request,
             form_template
             or [
-                "admin/{}/{}/change_form.html".format(app_label, self.opts.model_name),
-                "admin/%s/change_form.html" % app_label,
+                f"admin/{app_label}/{self.opts.model_name}/change_form.html",
+                f"admin/{app_label}/change_form.html",
                 "admin/change_form.html",
             ],
             context,
