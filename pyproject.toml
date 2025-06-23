@@ -103,3 +103,8 @@ addopts = [
 python_files = [ "tests.py", "test_*.py" ]
 testpaths = [ "tests" ]
 pythonpath = [ "." ]
+
+[tool.coverage.run]
+omit = [
+  "tests/*",
+]

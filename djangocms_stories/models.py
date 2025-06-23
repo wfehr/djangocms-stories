@@ -365,7 +365,7 @@ class Post(models.Model):
     def featured(self):
         if not self.date_featured:
             return False
-        return bool(self.date_featured >= now())
+        return bool(self.date_featured <= now())
 
     def get_content(self, language=None, show_draft_content=False):
         if not language:

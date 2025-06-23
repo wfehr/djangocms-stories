@@ -12,6 +12,7 @@ def test_create_post_category():
     assert category.slug == "tech"
     assert PostCategory.objects.count() == 1
     assert category.get_absolute_url() == f"/en/blog/category/{category.slug}/"
+    assert category.get_absolute_url(lang="en") == f"/en/blog/category/{category.slug}/"
     assert category.get_full_url() == f"http://example.com/en/blog/category/{category.slug}/"
 
 

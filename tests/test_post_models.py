@@ -1,9 +1,12 @@
+import datetime
 import hashlib
 from django.apps import apps
 import pytest
 
 from django.utils import translation
 from django.utils.encoding import force_bytes
+from django.utils.timezone import now
+
 
 from tests.utils import assert_num_queries
 
@@ -19,6 +22,8 @@ def test_base_fixture(post_content):
     assert "<p>This is a test post content.</p>" in post_content.post_text
     assert str(post_content.post) == "Test Post"
     assert post_content.get_template() == "djangocms_stories/post_structure.html"
+    assert post_content.content.cmsplugin_set.filter(language="en").count() == 1
+    assert post_content.media.cmsplugin_set.filter(language="en").count() == 0
 
     # Post properties
     post = post_content.post
@@ -26,6 +31,12 @@ def test_base_fixture(post_content):
     assert post.date == post.date_created  # No date_published or date_featured set, so date_created is used
     assert post.guid == hashlib.sha256(force_bytes(f"-en-test-post-{post.app_config.namespace}-")).hexdigest()
     assert post.get_content(language="en", show_draft_content=True) == post_content
+    assert post.get_image_full_url() == ""
+    assert post.get_image_width() is None
+    assert post.get_image_height() is None
+    assert post.thumbnail_options() == {"crop": True, "size": "120x120", "upscale": False}
+    assert post.full_image_options() == {"crop": True, "size": "640", "upscale": False}
+
     if apps.is_installed("djangocms_versioning"):
         assert post.get_content(language="en", show_draft_content=False) is None
     else:
@@ -49,7 +60,7 @@ def test_post_content_compatibility_stubs(db, default_config):
     assert post_content.post.date_published_end == post_content.date_published_end
     assert set(post_content.post.categories.all()) == set(post_content.categories.all())
     assert post_content.get_absolute_url() == post_content.post.get_absolute_url()
-
+    assert str(post_content) == post_content.title
     assert categories[0].count == 1
     assert categories[1].count == 1
     assert categories[0].count_all_sites == 2
@@ -90,6 +101,11 @@ def test_post_unicode_slug(db, post):
         assert post.get_title() == "Meta Accentué"
         assert post.get_title(language="fr") == "Meta Accentué"
         assert post.get_title(language="en") == "Meta Accentué"
+        post_content.meta_title = ""
+        post_content.save()
+        post._content_cache = {}  # Clear the cache to force re-fetching
+        assert post.get_title(language="fr") == "Accentué"
+        assert post.get_title(language="en") == "Accentué"
         assert post.guid == hashlib.sha256(force_bytes(f"-fr-accentué-{post.app_config.namespace}-")).hexdigest()
         fr_cache_key = post.get_cache_key(prefix="", language="fr")
 
@@ -120,6 +136,18 @@ def test_get_keywords(db):
         "are these key words",
         "or not",
     ]
+
+
+@pytest.mark.django_db
+def test_featured_property(db):
+    """Test the featured property of the Post model."""
+    from .factories import PostFactory
+
+    post = PostFactory(date_featured=None)
+    assert not post.featured()
+
+    post.date_featured = now() - datetime.timedelta(days=1)
+    assert post.featured()
 
 
 @pytest.mark.django_db
