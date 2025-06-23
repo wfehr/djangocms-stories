@@ -2,11 +2,15 @@ import factory
 from factory.django import DjangoModelFactory
 
 from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
 from datetime import timezone
 
 from djangocms_stories.settings import PERMALINK_TYPE_FULL_DATE
 from djangocms_stories.cms_appconfig import StoriesConfig
 from djangocms_stories.models import Post, PostContent, PostCategory
+
+
+default_site = Site.objects.get(pk=1)  # Assuming you have a default site with pk=1
 
 
 class UserFactory(DjangoModelFactory):
@@ -18,12 +22,12 @@ class UserFactory(DjangoModelFactory):
     password = factory.PostGenerationMethodCall("set_password", "defaultpassword")  # Set a default password
 
 
-class PostCategoryFactory(DjangoModelFactory):
+class SiteFactory(DjangoModelFactory):
     class Meta:
-        model = PostCategory
+        model = "sites.Site"
 
-    name = factory.Faker("word")
-    slug = factory.Faker("slug")
+    domain = factory.Faker("domain_name")
+    name = factory.Faker("company")
 
 
 class StoriesConfigFactory(DjangoModelFactory):
@@ -33,6 +37,15 @@ class StoriesConfigFactory(DjangoModelFactory):
     namespace = factory.Faker("slug")
     use_placeholder = True  # Assuming default value, adjust as necessary
     url_patterns = PERMALINK_TYPE_FULL_DATE
+
+
+class PostCategoryFactory(DjangoModelFactory):
+    class Meta:
+        model = PostCategory
+
+    app_config = factory.SubFactory(StoriesConfigFactory)
+    name = factory.Faker("word")
+    slug = factory.Faker("slug")
 
 
 class PostFactory(DjangoModelFactory):

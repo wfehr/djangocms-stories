@@ -199,11 +199,6 @@ class BlogCategory(BlogMetaMixin, ModelMeta, TranslatableModel):
         return self.blog_posts.filter(app_config=self.app_config)
 
     @cached_property
-    def pinned_posts(self):
-        """returns all linked posts which have a pinned value of at least 1"""
-        return self.linked_posts.filter(pinned__gt=0)
-
-    @cached_property
     def count(self):
         return self.linked_posts.filter(Q(sites__isnull=True) | Q(sites=Site.objects.get_current())).count()
 

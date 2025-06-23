@@ -48,9 +48,9 @@ thumbnail_model = f"{ThumbnailOption._meta.app_label}.{ThumbnailOption.__name__}
 # and finally fallback to a simple textarea
 if apps.is_installed("djangocms_text"):
     from djangocms_text.fields import HTMLField
-elif apps.is_installed("djangocms_text_ckeditor"):
+elif apps.is_installed("djangocms_text_ckeditor"):  # pragma: no cover
     from djangocms_text_ckeditor.fields import HTMLField
-else:
+else:  # pragma: no cover
     from django import forms
 
     class HTMLField(models.TextField):
@@ -173,7 +173,18 @@ class PostCategory(PostMetaMixin, ModelMeta, TranslatableModel):
         verbose_name_plural = _("post categories")
         ordering = (F("priority").asc(nulls_last=True),)
 
-    def descendants(self):
+    def descendants(self):  # pragma: no cover
+        import warnings
+
+        warnings.warn(
+            "The `descendants` method is deprecated and will be removed in future versions. "
+            "Use `get_descendants` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.get_descendants()
+
+    def get_descendants(self):
         children = []
         if self.children.exists():
             children.extend(self.children.all())
@@ -449,7 +460,10 @@ class Post(models.Model):
         Returns the list of keywords (as python list)
         :return: list
         """
-        return self.safe_translation_getter("meta_keywords", default="").strip().split(",")
+        keywords = self.safe_translation_getter("meta_keywords", any_language=True).strip()
+        if "".join(keywords) == "":
+            return []
+        return [keyword.strip() for keyword in keywords.split(",")]
 
     def get_description(self):
         description = self.safe_translation_getter("meta_description", any_language=True)

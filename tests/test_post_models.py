@@ -33,19 +33,27 @@ def test_base_fixture(post_content):
 
 
 @pytest.mark.django_db
-def test_post_content_compatibility_stubs(db):
-    from .factories import PostCategoryFactory, PostContentFactory
+def test_post_content_compatibility_stubs(db, default_config):
+    from .factories import PostCategoryFactory, PostContentFactory, SiteFactory
 
-    categories = [PostCategoryFactory(), PostCategoryFactory()]
-    post_content = PostContentFactory()
+    categories = [PostCategoryFactory(app_config=default_config), PostCategoryFactory(app_config=default_config)]
+    post_content = PostContentFactory(post__app_config=default_config)
+    other_post_content = PostContentFactory(post__app_config=default_config)
+    other_post_content.post.sites.add(SiteFactory())
 
     post_content.post.categories.set(categories)
+    other_post_content.post.categories.set(categories[0:1])
 
     assert post_content.post.author == post_content.author
     assert post_content.post.date_published == post_content.date_published
     assert post_content.post.date_published_end == post_content.date_published_end
     assert set(post_content.post.categories.all()) == set(post_content.categories.all())
     assert post_content.get_absolute_url() == post_content.post.get_absolute_url()
+
+    assert categories[0].count == 1
+    assert categories[1].count == 1
+    assert categories[0].count_all_sites == 2
+    assert categories[1].count_all_sites == 1
 
 
 @pytest.mark.django_db
@@ -86,6 +94,42 @@ def test_post_unicode_slug(db, post):
         fr_cache_key = post.get_cache_key(prefix="", language="fr")
 
     assert post.get_cache_key(prefix="", language="en") != fr_cache_key
+
+
+@pytest.mark.django_db
+def test_get_description(db):
+    from .factories import PostContentFactory
+
+    post_content_1 = PostContentFactory(meta_description="<p>This is a <b>test</b> description.</p>", abstract="")
+    post_content_2 = PostContentFactory(meta_description="", abstract="<p>This is a <b>test</b> abstract.</p>")
+
+    assert post_content_1.post.get_description() == "This is a test description."
+    assert post_content_2.post.get_description() == "This is a test abstract."
+
+
+@pytest.mark.django_db
+def test_get_keywords(db):
+    from .factories import PostContentFactory
+
+    post_content_1 = PostContentFactory(meta_keywords="")
+    post_content_2 = PostContentFactory(meta_keywords="test, are these key words, or not")
+
+    assert post_content_1.post.get_keywords() == []
+    assert post_content_2.post.get_keywords() == [
+        "test",
+        "are these key words",
+        "or not",
+    ]
+
+
+@pytest.mark.django_db
+def test_get_author(db):
+    from .factories import PostContentFactory, UserFactory
+
+    user = UserFactory(username="testuser")
+    post_content = PostContentFactory(post__author=user)
+
+    assert post_content.post.get_author() == user
 
 
 @pytest.mark.django_db
