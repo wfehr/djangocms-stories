@@ -2,17 +2,10 @@
 djangocms-stories
 =================
 
-|PyPiVersion| |PyVersion| |TestCoverage| |License|
+|PyPiVersion| |PyVersion| |DjVersion| |TestCoverage| |License|
 
-django CMS stories application - Tell your story in multilingual posts, using the full power of django CMS placeholders.
-
-Supported Django versions:
-
-* Django 4.2
-
-Supported django CMS versions:
-
-* django CMS 5.0+
+django CMS stories application - Tell your story in multilingual posts, using the full 
+power of django CMS placeholders.
 
 djangocms-stories is inspired by `Nephila's <https://github.com/nephila>`_ excellent
 `djangocms-blog <https://github.com/nephila/djangocms-blog>`_, but has been reimagined
@@ -99,7 +92,11 @@ to get started.
     :target: https://pypi.python.org/pypi/djangocms-stories
     :alt: Latest PyPI version
 
-.. |PyVersion| image:: https://img.shields.io/pypi/pyversions/djangocms-blog.svg?style=flat-square
+.. |PyVersion| image:: https://img.shields.io/pypi/pyversions/djangocms-stories.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/djangocms-stories
+    :alt: Python versions
+
+.. |DjVersion| image:: https://img.shields.io/pypi/frameworkversions/django/djangocms-stories.svg?style=flat-square
     :target: https://pypi.python.org/pypi/djangocms-stories
     :alt: Python versions
 
