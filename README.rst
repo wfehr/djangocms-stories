@@ -5,17 +5,11 @@ djangocms-stories
 | |PyPiVersion| |TestCoverage| |License|
 | |PyVersion| |DjVersion| |CmsVersion|
 
-Tell your story in multilingual posts, using the full power of django CMS.
-
-djangocms-stories is inspired by `Nephila's <https://github.com/nephila>`_ excellent
-`djangocms-blog <https://github.com/nephila/djangocms-blog>`_, with the intent to bring
-to align it with django CMS's new philosophy since version 4: "The design philosophy of
-django CMS is to solve something complex with many simple things." This means
-djangocms-stories focuses on core features and separates out features that can be
-shared between django CMS apps.
+**django CMS stories application - Tell your story in multilingual posts, using the full
+power of django CMS placeholders.**
 
 djangocms-stories provides a lean foundation for storytelling that can be composed with
-other specialized django CMS applications.
+other specialized django CMS applications, such as djangocms-versioning or djangocms-moderation.
 
 ********
 Features
@@ -71,8 +65,13 @@ To use taggit's autosuggest feature, add their URLS in ``urls.py``:
 Migrating from djangocms-blog
 *****************************
 
-If you are migrating from djangocms-blog follow the steps below (at your own risk - the
-migration is under development). Be sure to backup your database before.
+djangocms-stories is inspired by `Nephila's <https://github.com/nephila>`_ excellent
+`djangocms-blog <https://github.com/nephila/djangocms-blog>`_, with the intent to bring
+to align it with django CMS's new philosophy since version 4: "The design philosophy of
+django CMS is to solve something complex with many simple things."
+
+Embrace django CMS' philosophy and migrate from djangocms-blog by following the steps below
+(at your own risk - the migration is under development). Be sure to backup your database before.
 
 1. Uninstall djangocsms-blog: ``pip uninstall djangocms-blog``
 2. Install djangocms-stories ``pip install git+https://github.com/fsbraun/djangocms-stories.git``
