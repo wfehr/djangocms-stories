@@ -31,6 +31,7 @@ Features
 * Multiple instaces per site (e.g., blog, news, stories)
 * Django sitemap framework
 * django CMS Wizard integration
+* Supports djangocms-versioning and djangocms-moderation
 
 ************
 Installation
