@@ -88,8 +88,9 @@ Embrace django CMS' philosophy and migrate from djangocms-blog by following the 
   to the ``Post`` object.
 
 
+************
 Contributing
-============
+************
 
 Because this is a an open-source project, we welcome everyone to
 `get involved in the project <https://www.django-cms.org/en/contribute/>`_ and
