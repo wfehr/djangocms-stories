@@ -5,8 +5,7 @@ djangocms-stories
 | |PyPiVersion| |TestCoverage| |License|
 | |PyVersion| |DjVersion| |CmsVersion|
 
-django CMS stories application - Tell your story in multilingual posts, using the full
-power of django CMS placeholders.
+Tell your story in multilingual posts, using the full power of django CMS.
 
 djangocms-stories is inspired by `Nephila's <https://github.com/nephila>`_ excellent
 `djangocms-blog <https://github.com/nephila/djangocms-blog>`_, with the intent to bring
