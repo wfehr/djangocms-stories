@@ -90,7 +90,7 @@ PARLER_LANGUAGES = {
     2: ({"code": "en"},),
     "default": {"fallbacks": ["en"], "hide_untranslated": False},
 }
-CMS_TEMPLATES = (("blog.html", "Blog template"),)
+CMS_TEMPLATES = (("base.html", "Blog template"),)
 META_SITE_PROTOCOL = "http"
 META_USE_SITES = True
 META_SITE_DOMAIN = "example.com"

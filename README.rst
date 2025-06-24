@@ -9,14 +9,30 @@ django CMS stories application - Tell your story in multilingual posts, using th
 power of django CMS placeholders.
 
 djangocms-stories is inspired by `Nephila's <https://github.com/nephila>`_ excellent
-`djangocms-blog <https://github.com/nephila/djangocms-blog>`_, but has been aligned
-with django CMS's new philosophy since version 4: "The design philosophy of
+`djangocms-blog <https://github.com/nephila/djangocms-blog>`_, with the intent to bring
+to align it with django CMS's new philosophy since version 4: "The design philosophy of
 django CMS is to solve something complex with many simple things." This means
 djangocms-stories focuses on core features and separates out features that can be
 shared between django CMS apps.
 
 djangocms-stories provides a lean foundation for storytelling that can be composed with
 other specialized django CMS applications.
+
+********
+Features
+********
+
+* Frontend editing using django CMS frontend editor
+* Placeholder content editing
+* Optional simpler TextField-based content editing
+* Multilingual support using django-parler
+* Multisite (posts can be visible in one or more Django sites on the same project)
+* Per-Apphook configuration
+* Configurable permalinks
+* Configurable user navigation
+* Per-Apphook freely designable templates set
+* Django sitemap framework
+* django CMS Wizard integration
 
 ************
 Installation
@@ -52,22 +68,6 @@ To use taggit's autosuggest feature, add their URLS in ``urls.py``:
     url_patterns += [path('taggit_autosuggest/', include('taggit_autosuggest.urls'))]
 
 
-********
-Features
-********
-
-* Placeholder content editing
-* Frontend editing using django CMS frontend editor
-* Multilingual support using django-parler
-* Optional simpler TextField-based content editing
-* Multisite (posts can be visible in one or more Django sites on the same project)
-* Per-Apphook configuration
-* Configurable permalinks
-* Configurable user navigation (django CMS menu)
-* Per-Apphook templates set
-* Django sitemap framework
-* django CMS Wizard integration
-* Desktop notifications
 
 *****************************
 Migrating from djangocms-blog
@@ -83,14 +83,38 @@ migration is under development). Be sure to backup your database before.
    from djangocms-blog to djangocms-stories and delete djangocms-blogs database tables.
 5. Remove ``"djangocms_blog"`` from your installed apps.
 
-************
+**Custom templates will need manual updating**, since the underlying model structure has changed:
+
+* ``post`` contains the following fields: ``related``, ``main_image``, ``author``, ``date``, ``categories``, ``tags``
+* ``post_content`` contiains the following per-language fields:
+  ``title``, ``subtitle``, ``slug``, ``content``, ``media``, and ``post``, the reference
+  to the ``Post`` object.
+
+
 Contributing
-************
+============
 
-Contributions to ``djangocms-text`` are welcome! Please read our
-`contributing guidelines <https://docs.django-cms.org/en/stable/contributing/index.html>`_
-to get started.
+Because this is a an open-source project, we welcome everyone to
+`get involved in the project <https://www.django-cms.org/en/contribute/>`_ and
+`receive a reward <https://www.django-cms.org/en/bounty-program/>`_ for their contribution.
+Become part of a fantastic community and help us make django CMS the best CMS in the world.
 
+We'll be delighted to receive your
+feedback in the form of issues and pull requests. Before submitting your
+pull request, please review our `contribution guidelines
+<http://docs.django-cms.org/en/latest/contributing/index.html>`_.
+
+The project makes use of git pre-commit hooks to maintain code quality.
+Please follow the installation steps to get `pre-commit <https://pre-commit.com/#installation>`_
+setup in your development environment.
+
+We're grateful to all contributors who have helped create and maintain
+this package. Contributors are listed at the `contributors
+<https://github.com/fsbraun/djangocms-stories/graphs/contributors>`_
+section.
+
+One of the easiest contributions you can make is helping to translate this addon on
+`Transifex <https://www.transifex.com/divio/djangocms-stories/dashboard/>`_.
 
 .. |PyPiVersion| image:: https://img.shields.io/pypi/v/djangocms-stories.svg?style=flat-square
     :target: https://pypi.python.org/pypi/djangocms-stories
