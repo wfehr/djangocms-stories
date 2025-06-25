@@ -1,5 +1,5 @@
 from django.core.management import execute_from_command_line
-from django.utils.translation import activate
+from django.utils.translation import activate, override
 
 
 def test_apphook_migration():
@@ -50,13 +50,33 @@ def test_post_content_migration():
     )
 
 
+def test_post_category_hierachy():
+    from djangocms_stories.models import PostCategory
+
+    cat1, cat2, cat3 = PostCategory.objects.all()[:3]
+
+    assert cat1.parent_id == cat3.pk
+    assert cat2.parent_id == cat1.pk
+    assert cat3.parent is None
+
+
+def test_post_category_assignment():
+    from djangocms_stories.models import Post, PostCategory
+
+    story1, story2 = Post.objects.all()[:2]
+    cat1, cat2, cat3 = PostCategory.objects.all()[:3]
+
+    assert set(story1.categories.all()) == {cat2, cat3}
+    assert set(story2.categories.all()) == {cat1}
+
+
 def setup_blog_testproj():
     from cms import api
     from django.apps import apps
     from django.contrib.auth import get_user_model
     from django.contrib.auth.models import Group
 
-    from fixtures import generate_config, generate_blog, POST_CONTENT_DATA
+    from fixtures import generate_config, generate_blog, generate_category, POST_CONTENT_DATA
 
     assert apps.is_installed("djangocms_blog"), "djangocms_blog is not installed"
 
@@ -90,6 +110,20 @@ def setup_blog_testproj():
     post_en1.save()
     post_fr1.save()
     post2, post_en2, post_fr2 = generate_blog(config2, user, author=user)
+
+    cat1 = generate_category(config2, name="Category 1", slug="category-1")
+    cat2 = generate_category(config2, name="Category 2", slug="category-2")
+    with override("fr"):
+        cat3 = generate_category(config2, name="Catégorie 3", slug="categorie-3")
+
+    cat1.parent = cat3
+    cat2.parent = cat1
+    cat1.save()
+    cat2.save()
+
+    post1.categories.add(cat2)
+    post1.categories.add(cat3)
+    post2.categories.add(cat1)
 
     page = api.create_page(
         title="Test Page",

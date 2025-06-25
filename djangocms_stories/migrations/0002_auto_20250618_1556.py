@@ -16,10 +16,8 @@ migration_table = (
     ("GenericBlogPlugin", "GenericBlogPlugin"),
 )
 
-pk_maps = {}
 
-
-def copy_data(pk_maps, source_model: models.Model, target_model: models.Model):
+def copy_data(pk_maps: dict, pass_2: list, source_model: models.Model, target_model: models.Model):
     source_objects = source_model.objects.all()
     fields = [
         field.name
@@ -36,6 +34,7 @@ def copy_data(pk_maps, source_model: models.Model, target_model: models.Model):
         obj_dict = {field: getattr(obj, field) for field in fields}
 
         old_pk = obj_dict.pop("id")
+        unresolved = []
         # Update any foreign keys using pk_maps
         for field in target_model._meta.fields:
             if field.is_relation and field.many_to_one and field.remote_field:
@@ -43,10 +42,61 @@ def copy_data(pk_maps, source_model: models.Model, target_model: models.Model):
                 rel_model = field.remote_field.model
                 rel_model_name = rel_model.__name__
                 old_fk = obj_dict.get(fk_name)
-                if old_fk is not None and rel_model_name in pk_maps and old_fk in pk_maps[rel_model_name]:
-                    obj_dict[fk_name] = pk_maps[rel_model_name][old_fk]
+                if old_fk is not None:
+                    # Foreign key needs to be translated
+                    if rel_model_name in pk_maps and old_fk in pk_maps[rel_model_name]:
+                        obj_dict[fk_name] = pk_maps[rel_model_name][old_fk]
+                    else:
+                        # No value available, mark for pass 2
+                        unresolved.append((rel_model_name, fk_name, old_fk))
         new_obj = target_model.objects.create(**obj_dict)
         pk_maps.setdefault(target_model.__name__, {})[old_pk] = new_obj.pk
+        for rel_model_name, fk_name, old_fk in unresolved:
+            pass_2.append((target_model, new_obj.pk, rel_model_name, fk_name, old_fk, ))
+
+
+def finish_pass_2(pk_maps, pass_2):
+    for model, pk, rel_model_name, fk_name, old_fk in pass_2:
+        if rel_model_name in pk_maps and old_fk in pk_maps[rel_model_name]:
+            model.objects.filter(pk=pk).update(**{fk_name: pk_maps.get(rel_model_name, {}).get(old_fk)})
+
+def copy_m2m(apps, pk_maps, m2m_relation):
+    src_app, src_model, src_field, tgt_app, tgt_model, tgt_field = m2m_relation
+
+    SrcModel = apps.get_model(src_app, src_model)
+    TgtModel = apps.get_model(tgt_app, tgt_model)
+
+    tgt_field_obj = TgtModel._meta.get_field(tgt_field)
+    src_field_obj = SrcModel._meta.get_field(src_field)
+    src_through_model = src_field_obj.remote_field.through
+    tgt_through_model = tgt_field_obj.remote_field.through
+    src_left = next(
+        f for f in src_through_model._meta.get_fields()
+        if f.is_relation and f.many_to_one and f.related_model is SrcModel
+    ).name + "_id"
+    src_right = next(
+        f for f in src_through_model._meta.get_fields()
+        if f.is_relation and f.many_to_one and f.related_model is src_field_obj.remote_field.model
+    ).name + "_id"
+    tgt_left = next(
+        f for f in tgt_through_model._meta.get_fields()
+        if f.is_relation and f.many_to_one and f.related_model is TgtModel
+    ).name + "_id"
+    tgt_right = next(
+        f for f in tgt_through_model._meta.get_fields()
+        if f.is_relation and f.many_to_one and f.related_model is tgt_field_obj.remote_field.model
+    ).name + "_id"
+
+    left_key = TgtModel.__name__
+    right_key = tgt_field_obj.remote_field.model.__name__
+    for src_obj in src_through_model.objects.all():
+        left, right = getattr(src_obj, src_left), getattr(src_obj, src_right)
+        new_left = pk_maps.get(left_key, {}).get(left, left)  # Leave unchanged if not present
+        new_right = pk_maps.get(right_key, {}).get(right, right)  # Leave unchanged if not present
+        tgt_through_model.objects.create(**{
+            tgt_left: new_left,
+            tgt_right: new_right,
+        })
 
 
 def migrate_from_blog_to_stories(apps, schema_editor):
@@ -79,56 +129,39 @@ def migrate_from_blog_to_stories(apps, schema_editor):
     # 3. Migrate each model from djangocms_blog to djangocms_stories
     print("# 3. Migrate each model from djangocms_blog to djangocms_stories")
     pk_maps = {}
+    pass_2 = []
+
     for source, target in migration_table:
         SourceModel = apps.get_model("djangocms_blog", source)
         TargetModel = apps.get_model("djangocms_stories", target)
         # Copy data from source to target
-        copy_data(pk_maps, SourceModel, TargetModel)
+        copy_data(pk_maps, pass_2, SourceModel, TargetModel)
+
+    # Try to finish the open relations in pass 2
+    finish_pass_2(pk_maps, pass_2)
 
     # 4. Copy many-to-many relationships
     print("# 4. Copy many-to-many relationships")
     m2m_models = [
         # (source_app, source_model, source_field, target_app, target_model, target_field)
-        ("djangocms_blog", "Post", "Post_categories+", "djangocms_stories", "Post", "categories"),
-        ("djangocms_blog", "Post", "Post_related+", "djangocms_stories", "Post", "related"),
-        ("djangocms_blog", "Post", "Post_sites+", "djangocms_stories", "Post", "sites"),
+        ("djangocms_blog", "Post", "categories", "djangocms_stories", "Post", "categories"),
+        ("djangocms_blog", "Post", "related", "djangocms_stories", "Post", "related"),
+        ("djangocms_blog", "Post", "sites", "djangocms_stories", "Post", "sites"),
         (
             "djangocms_blog",
             "AuthorEntriesPlugin",
-            "AuthorEntriesPlugin_authors+",
+            "authors",
             "djangocms_stories",
             "AuthorEntriesPlugin",
             "authors",
         ),
     ]
 
-    for src_app, src_model, src_field, tgt_app, tgt_model, tgt_field in m2m_models:
-        try:
-            SrcModel = apps.get_model(src_app, src_model)
-            TgtModel = apps.get_model(tgt_app, tgt_model)
-            src_to_tgt_pk = pk_maps.get(src_model, {})
-            tgt_field_obj = TgtModel._meta.get_field(tgt_field)
-            src_field_obj = SrcModel._meta.get_field(src_field)
-            through_model = tgt_field_obj.remote_field.through
-
-            for src_obj in SrcModel.objects.all():
-                src_pk = src_obj.pk
-                tgt_pk = src_to_tgt_pk.get(src_pk)
-                if not tgt_pk:
-                    continue
-                tgt_obj = TgtModel.objects.get(pk=tgt_pk)
-                if src_field.endswith("+"):
-                    src_field = src_field[len(src_model) + 1 : -1]  # Remove '+' to get the actual field name
-                src_m2m_ids = list(getattr(src_obj, src_field).values_list("pk", flat=True))
-                # Map source related PKs to target PKs
-                rel_model_name = src_field_obj.remote_field.model.__name__
-                rel_pk_map = pk_maps.get(rel_model_name, {})
-                tgt_m2m_ids = [rel_pk_map.get(rel_pk) for rel_pk in src_m2m_ids if rel_pk in rel_pk_map]
-                getattr(tgt_obj, tgt_field).set(tgt_m2m_ids)
-        except Exception as e:
-            print(e)
-            continue
-
+    for m2m_relation in m2m_models:
+        copy_m2m(
+            apps, pk_maps,
+            m2m_relation,
+        )
     # 5. Update generic releations
     print("# 5. Update generic relations")
 

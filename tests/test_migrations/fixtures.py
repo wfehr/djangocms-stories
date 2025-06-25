@@ -63,5 +63,14 @@ def generate_blog(config, user, **wkargs):
 
 
 def generate_config(**kwargs):
-    return BlogConfig.objects.create(app_title="Test Blog", object_name="Article", **kwargs)
+    config = BlogConfig.objects.create(app_title="Test Blog", object_name="Article", **kwargs)
     increase_pk(BlogConfig)
+    return config
+
+
+def generate_category(config, **kwargs):
+    from djangocms_blog.models import BlogCategory
+
+    category = BlogCategory.objects.create(app_config=config, **kwargs)
+    increase_pk(BlogCategory)
+    return category
