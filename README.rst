@@ -2,7 +2,7 @@
 djangocms-stories
 =================
 
-|PyPiVersion| |TestCoverage| |License| |PyVersion| |DjVersion| |CmsVersion|
+|PyPiVersion| |TestCoverage| |PyVersion| |DjVersion| |CmsVersion|
 
 **django CMS stories application - Tell your story in multilingual posts, using the full
 power of django CMS placeholders.**
@@ -82,6 +82,7 @@ process - nevertheless be sure to backup your database before proceeding.
   to the ``Post`` object.
 
 Some **improvements for developers** are included:
+
 * You now can use the ``{% placeholder %}`` template tag in the post_detail.html template to render
   any placeholder. ``{% render_placeholder post_content.content %}`` and ``{% render_placeholder post_content.media %}``
   are still available, but you can now use ``{% placeholder "new_content" %}`` to, say, add additional placeholders.
