@@ -115,12 +115,14 @@ def setup_blog_testproj():
     execute_from_command_line(["manage.py", "migrate", "sessions", "--noinput"])
     execute_from_command_line(["manage.py", "migrate", "contenttypes", "--noinput"])
     execute_from_command_line(["manage.py", "migrate", "sites", "--noinput"])
+    execute_from_command_line(["manage.py", "migrate", "admin", "--noinput"])
     execute_from_command_line(["manage.py", "migrate", "auth", "--noinput"])
     execute_from_command_line(["manage.py", "migrate", "taggit", "--noinput"])
     execute_from_command_line(["manage.py", "migrate", "easy_thumbnails", "--noinput"])
     execute_from_command_line(["manage.py", "migrate", "filer", "--noinput"])
     execute_from_command_line(["manage.py", "migrate", "djangocms_blog", "--noinput"])
     execute_from_command_line(["manage.py", "migrate", "djangocms_text", "--noinput"])
+    execute_from_command_line(["manage.py", "migrate", "djangocms_video", "--noinput"])
     execute_from_command_line(["manage.py", "migrate", "djangocms_versioning", "--noinput"])
     # Migrate all apps except the specific one to latest
     # execute_from_command_line(["manage.py", "migrate", "--noinput"])
@@ -211,8 +213,9 @@ if __name__ == "__main__":
         assert django.apps.apps.is_installed("djangocms_stories"), "djangocms_stories is not installed"
         assert django.apps.apps.is_installed("djangocms_blog"), "djangocms_blog is not installed"
         execute_from_command_line(["manage.py", "migrate", "--noinput"])
-        print(80 * "=")
+        print("\n")
         print("Running tests...")
+        print(80 * "=")
         activate("en")
         current_module = sys.modules[__name__]
         for name in dir(current_module):

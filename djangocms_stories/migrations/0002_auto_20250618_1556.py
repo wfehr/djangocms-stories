@@ -110,6 +110,7 @@ def migrate_from_blog_to_stories(apps, schema_editor):
     ContentType = apps.get_model("contenttypes", "ContentType")
 
     # 1. Check if the djangocms_blog Post table exists
+    print()
     print("# 1. Check if the djangocms_blog Post table exists")
     table_name = "djangocms_blog_post"
     with schema_editor.connection.cursor() as cursor:
