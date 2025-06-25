@@ -64,8 +64,8 @@ To use taggit's autosuggest feature, add their URLS in ``urls.py``:
 Migrating from djangocms-blog
 *****************************
 
-Migrate from djangocms-blog by following the steps below (at your own risk - the migration is
-under development). Be sure to backup your database before.
+Migrate from djangocms-blog by following the steps below. There is test coverage for the migration
+process - nevertheless be sure to backup your database before proceeding.
 
 1. Uninstall djangocsms-blog: ``pip uninstall djangocms-blog``
 2. Install djangocms-stories ``pip install git+https://github.com/fsbraun/djangocms-stories.git``
@@ -80,6 +80,11 @@ under development). Be sure to backup your database before.
 * ``post_content`` contiains the following per-language fields:
   ``title``, ``subtitle``, ``slug``, ``content``, ``media``, and ``post``, the reference
   to the ``Post`` object.
+
+Some **improvements for developers** are included:
+* You now can use the ``{% placeholder %}`` template tag in the post_detail.html template to render
+  any placeholder. ``{% render_placeholder post_content.content %}`` and ``{% render_placeholder post_content.media %}``
+  are still available, but you can now use ``{% placeholder "new_content" %}`` to, say, add additional placeholders.
 
 
 ************
