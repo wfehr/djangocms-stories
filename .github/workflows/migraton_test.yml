@@ -30,7 +30,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip uv
         uv pip install --system -r ./tests/requirements/${{ matrix.requirements }}
-    - name: Test migration from djangocms Blog to djangocms Stories
+    - name: Create djangocms-blog setup
       run: |
         python tests/test_migrations/run.py --phase1
+    - name: Test migration from djangocms-blog to djangocms-stories
+      run: |
         python tests/test_migrations/run.py --phase2

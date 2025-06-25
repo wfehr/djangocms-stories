@@ -74,3 +74,19 @@ def generate_category(config, **kwargs):
     category = BlogCategory.objects.create(app_config=config, **kwargs)
     increase_pk(BlogCategory)
     return category
+
+
+def generate_placeholder_content(source, language, **kwargs):
+    from cms.api import add_plugin
+    from cms.models import Placeholder
+
+    placeholder = Placeholder.objects.create(slot="content", source=source)
+    increase_pk(Placeholder)
+
+    content = add_plugin(
+        placeholder,
+        "TextPlugin",
+        language,
+        **kwargs,
+    )
+    return content

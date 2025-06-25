@@ -70,13 +70,42 @@ def test_post_category_assignment():
     assert set(story2.categories.all()) == {cat1}
 
 
+def test_post_content_placeholder_moved():
+    from djangocms_stories.models import Post
+
+    story1, story2 = Post.objects.all()[:2]
+
+    content1, content2 = (
+        story1.get_content("en", show_draft_content=True),
+        story1.get_content("fr", show_draft_content=True),
+    )
+    empty1, empty2 = (
+        story2.get_content("en", show_draft_content=True),
+        story2.get_content("fr", show_draft_content=True),
+    )
+
+    assert content1 and content2, "Both content objects should exist"
+
+    assert content1.placeholders.count() == 1, "Content in English should have one placeholder"
+    assert content2.placeholders.count() == 1, "Content in French should have one placeholder"
+
+    assert empty1.placeholders.count() == 0, "Content in English should have no placeholders"
+    assert empty2.placeholders.count() == 0, "Content in French should have no placeholders"
+
+
 def setup_blog_testproj():
     from cms import api
     from django.apps import apps
     from django.contrib.auth import get_user_model
     from django.contrib.auth.models import Group
 
-    from fixtures import generate_config, generate_blog, generate_category, POST_CONTENT_DATA
+    from fixtures import (
+        generate_config,
+        generate_blog,
+        generate_category,
+        generate_placeholder_content,
+        POST_CONTENT_DATA,
+    )
 
     assert apps.is_installed("djangocms_blog"), "djangocms_blog is not installed"
 
@@ -125,6 +154,9 @@ def setup_blog_testproj():
     post1.categories.add(cat3)
     post2.categories.add(cat1)
 
+    generate_placeholder_content(post_en1, "en", body="<p>This is the content of the first post in English.</p>")
+    generate_placeholder_content(post_fr1, "fr", body="<p>Ceci est le contenu du premier article en français.</p>")
+
     page = api.create_page(
         title="Test Page",
         template="base.html",
@@ -132,9 +164,6 @@ def setup_blog_testproj():
         slug="test-page",
         created_by=user,
     )
-    from cms.models import PageContent
-
-    assert PageContent.admin_manager.count() == 1, "There should be one page content created"
     page.application_urls = "BlogApp"
     page.application_namespace = config1.namespace
     page.save()
