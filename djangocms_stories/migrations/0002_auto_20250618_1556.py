@@ -64,7 +64,7 @@ def migrate_from_blog_to_stories(apps, schema_editor):
     table_name = "djangocms_blog_post"
     with schema_editor.connection.cursor() as cursor:
         tables = schema_editor.connection.introspection.table_names(cursor)
-    print(f"Available tables: {tables}")
+
     if table_name not in tables:
         # No migration needed, djangocms_blog Post table does not exist
         return
@@ -166,6 +166,14 @@ def migrate_from_blog_to_stories(apps, schema_editor):
             cursor.execute(f'DROP TABLE IF EXISTS "{table}";')
 
 
+def adjust_apphooks(apps, schema_editor):
+    Page = apps.get_model("cms", "Page")
+
+    Page.objects.filter(application_urls="BlogApp").update(
+        application_urls="StoriesConfig"
+    )
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("djangocms_stories", "0001_initial"),
@@ -175,5 +183,9 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             code=migrate_from_blog_to_stories,
             elidable=True,
-        )
+        ),
+        migrations.RunPython(
+            code=adjust_apphooks,
+            elidable=True,
+        ),
     ]
