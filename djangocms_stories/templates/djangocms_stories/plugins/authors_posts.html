@@ -6,7 +6,7 @@
         <li>
             <h3>{% trans "Articles by" %} {{ author.get_full_name }}</h3>
             <div class="blog-latest-entries">
-                {% for post in author.posts %}
+                {% for post in author.post_contents %}
                     {% include "djangocms_stories/includes/blog_item.html" with post=post image="true" TRUNCWORDS_COUNT=TRUNCWORDS_COUNT %}
                 {% empty %}
                     <p class="blog-empty">{% trans "No article found." %}</p>

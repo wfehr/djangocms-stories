@@ -10,6 +10,30 @@ from djangocms_stories.models import PostContent
 register = template.Library()
 
 
+@register.simple_tag(name="namespace_url")
+def namespace_url(view_name, *args, namespace="djangocms_stories", **kwargs):
+    """
+    Returns the URL for a given namespace and view name.
+
+    Usage:
+
+    .. code-block: python
+
+        {% namespace_url request "djangocms_stories" "posts-latest" as latest_posts_url %}
+        <a href="{{ latest_posts_url }}">Latest Posts</a>
+
+    :param context: template context
+    :type context: dict
+    :param namespace: app namespace
+    :type namespace: str
+    :param view_name: name of the view to reverse
+    :type view_name: str
+    :return: URL for the specified view in the given namespace
+    :rtype: str
+    """
+    return admin_reverse(f"{namespace}:{view_name}", args=args, kwargs=kwargs)
+
+
 @register.simple_tag(name="media_plugins", takes_context=True)
 def media_plugins(context, post_content):
     """

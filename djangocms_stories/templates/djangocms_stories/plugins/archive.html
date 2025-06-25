@@ -1,4 +1,4 @@
-{% load i18n apphooks_config_tags %}{% spaceless %}
+{% load i18n djangocms_stories %}{% spaceless %}
 <div class="plugin plugin-blog">
     <h3>{% trans "Archive" %}</h3>
     {% regroup dates by date.year as years %}

@@ -93,13 +93,6 @@ def create_post_post_save(model):
     return create_instance
 
 
-def admin_get_object_or_404(model, **kwargs):
-    try:
-        return model.admin_manager.get(**kwargs)
-    except ObjectDoesNotExist:
-        raise Http404
-
-
 class SiteListFilter(admin.SimpleListFilter):
     title = _("site")
     parameter_name = "sites"
@@ -354,12 +347,6 @@ class CategoryAdmin(FrontendEditableAdminMixin, ModelAppHookConfig, Translatable
             },
         ),
     )
-
-    def get_prepopulated_fields(self, request, obj=None):
-        app_config_default = self._app_config_select(request, obj)
-        if app_config_default is None and request.method == "GET":
-            return {}
-        return {"slug": ("name",)}
 
     class Media:
         css = {"all": ("{}djangocms_stories/css/{}".format(settings.STATIC_URL, "djangocms_stories_admin.css"),)}
