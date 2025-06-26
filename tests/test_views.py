@@ -114,6 +114,30 @@ def test_post_archive_view(admin_client, default_config):
 
 
 @pytest.mark.django_db
+def test_post_tagged_view(client, default_config, assert_html_in_response):
+    """
+    Test the PostTaggedView returns a list of posts and renders expected content.
+    """
+    from .factories import PostContentFactory
+
+    post_contents = PostContentFactory.create_batch(3, post__app_config=default_config)
+    post_contents[0].post.tags.add("other")
+    post_contents[1].post.tags.add("test tag")
+
+    url = reverse("djangocms_stories:posts-tagged", kwargs={"tag": "test-tag"})
+    response = client.get(url)
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+
+    assert '<section class="blog-list">' in content
+
+    assert_html_in_response("<h2> Tag &ndash; Test-tag </h2>", response)
+    assert post_contents[0].title not in content
+    assert post_contents[1].title in content
+    assert post_contents[2].title not in content
+
+
+@pytest.mark.django_db
 def test_post_author_view(admin_client, default_config, assert_html_in_response):
     """
     Test the PostListView returns a list of posts and renders expected content.
@@ -168,6 +192,13 @@ def test_post_category_view(client, default_config):
         absolute_url = post_content.get_absolute_url()
         assert f'<article id="post-{post_content.slug}" class="post-item">' in content
         assert f'<h3><a href="{absolute_url}">{post_content.title}</a></h3>' in content
+
+
+@pytest.mark.django_db
+def test_post_category_view_404(client, default_config):
+    url = reverse("djangocms_stories:posts-category", kwargs={"category": "This-Category-Does-Not-Exist"})
+    response = client.get(url)
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
