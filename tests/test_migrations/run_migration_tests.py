@@ -70,6 +70,14 @@ def test_post_category_assignment():
     assert set(story2.categories.all()) == {cat1}
 
 
+def test_tag_assignment():
+    from djangocms_stories.models import Post
+
+    story1, story2 = Post.objects.all()[:2]
+    assert set(story1.tags.names()) == {"tag1"}
+    assert set(story2.tags.names()) == {"tag1", "tag2"}
+
+
 def test_post_content_placeholder_moved():
     from djangocms_stories.models import Post
 
@@ -156,6 +164,9 @@ def setup_blog_testproj():
     post1.categories.add(cat3)
     post2.categories.add(cat1)
 
+    post1.tags.add("tag1")
+    post2.tags.add("tag1", "tag2")
+
     generate_placeholder_content(post_en1, "en", body="<p>This is the content of the first post in English.</p>")
     generate_placeholder_content(post_fr1, "fr", body="<p>Ceci est le contenu du premier article en français.</p>")
 
@@ -195,7 +206,7 @@ if __name__ == "__main__":
         print(f"This script is meant to be run with '{sys.argv[0]} --phase<1/2>'")
         sys.exit(1)
     if sys.argv[1] == "--phase1":
-        os.environ["DJANGO_SETTINGS_MODULE"] = "tests.test_migrations.pre"
+        os.environ["DJANGO_SETTINGS_MODULE"] = "tests.test_migrations.settings_pre"
         django.setup()
         if os.path.exists(db_path):
             os.remove(db_path)
@@ -207,7 +218,7 @@ if __name__ == "__main__":
             print(f"Database file {db_path} does not exist. Aborting.")
             sys.exit(1)
 
-        os.environ["DJANGO_SETTINGS_MODULE"] = "tests.test_migrations.post"
+        os.environ["DJANGO_SETTINGS_MODULE"] = "tests.test_migrations.settings_post"
         django.setup()
         print("Running migrations...")
         assert django.apps.apps.is_installed("djangocms_stories"), "djangocms_stories is not installed"
