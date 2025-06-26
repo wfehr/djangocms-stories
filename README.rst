@@ -33,7 +33,7 @@ To install the latest version directly from GitHub, run:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/fsbraun/djangocms-stories.git
+    pip install djangocms-stories
 
 Add ``djangocms_stories`` to your ``INSTALLED_APPS`` in your Django project's ``settings.py``:
 
