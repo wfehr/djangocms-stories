@@ -68,7 +68,7 @@ Migrate from djangocms-blog by following the steps below. There is test coverage
 process - nevertheless be sure to backup your database before proceeding.
 
 1. Uninstall djangocsms-blog: ``pip uninstall djangocms-blog``
-2. Install djangocms-stories ``pip install git+https://github.com/fsbraun/djangocms-stories.git``
+2. Install djangocms-stories ``pip install djangocms-stories``
 3. Add ``"djangocms_stories"`` to your installed apps. Do **not** remove djangocms-blog.
 4. Run ``./manage.py migrate djangocms_stories``. This in migration 0002 will move existing content
    from djangocms-blog to djangocms-stories and delete djangocms-blogs database tables.
@@ -108,7 +108,7 @@ setup in your development environment.
 
 We're grateful to all contributors who have helped create and maintain
 this package. Contributors are listed at the `contributors
-<https://github.com/fsbraun/djangocms-stories/graphs/contributors>`_
+<https://github.com/django-cms/djangocms-stories/graphs/contributors>`_
 section.
 
 One of the easiest contributions you can make is helping to translate this addon on
@@ -139,10 +139,10 @@ django CMS is to solve something complex with many simple things."
     :target: https://pypi.python.org/pypi/djangocms-stories
     :alt: django CMS versions
 
-.. |TestCoverage| image:: https://codecov.io/gh/fsbraun/djangocms-stories/graph/badge.svg?token=O64yNt6pgo
-    :target: https://codecov.io/gh/fsbraun/djangocms-stories
+.. |TestCoverage| image:: https://codecov.io/gh/django-cms/djangocms-stories/graph/badge.svg?token=O64yNt6pgo
+    :target: https://codecov.io/gh/django-cms/djangocms-stories
     :alt: Test coverage
 
-.. |License| image:: https://img.shields.io/github/license/fsbraun/djangocms-stories.svg?style=flat-square
+.. |License| image:: https://img.shields.io/github/license/django-cms/djangocms-stories.svg?style=flat-square
    :target: https://pypi.python.org/pypi/djangocms-stories/
     :alt: License
