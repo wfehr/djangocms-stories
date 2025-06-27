@@ -1,9 +1,9 @@
 name: Run Tests and CodeCov
 
-on: [pull_request, push]
+on: [pull_request]
 
 jobs:
-  unit-tests:
+  tests:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -15,6 +15,7 @@ jobs:
           dj42_cms50.txt,
           dj52_cms50.txt,
         ]
+        versioning: [ "on", "off" ]
         os: [
           ubuntu-latest,
         ]
@@ -27,6 +28,10 @@ jobs:
             requirements-file: "dj52_cms50.txt"
           - python-version: "3.10"
             requirements-file: "dj52_cms50.txt"
+          - requirements-file: "dj42_cms41.txt"
+            versioning: "on"
+          - requirements-file: "dj52_cms41.txt"
+            versioning: "on"
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
@@ -41,6 +46,7 @@ jobs:
 
     - name: Run coverage
       run: |
+        export TEST_WITH_VERSIONING=${{ matrix.versioning }}
         pytest --cov --cov-branch --cov-report=xml
 
     - name: Upload Coverage to Codecov

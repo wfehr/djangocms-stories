@@ -1,4 +1,5 @@
 from tempfile import mkdtemp
+import os
 
 
 def gettext(s):
@@ -33,6 +34,10 @@ INSTALLED_APPS = [
     "djangocms_video",
     "sortedm2m",
 ]
+
+if os.environ.get("TEST_WITH_VERSIONING", "") == "on":
+    INSTALLED_APPS.append("djangocms_versioning")
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -115,3 +120,6 @@ CMS_CONFIRM_VERSION4 = True
 # AUTH_USER_MODEL = "test_utils.CustomUser"
 
 STATIC_URL = "/static/"
+
+
+TESTS_RUNNING = True
