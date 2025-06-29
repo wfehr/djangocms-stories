@@ -466,7 +466,7 @@ class PostAdmin(
         """Returns True if user can change content_obj"""
         if content_obj and is_versioning_enabled():
             version = content_obj.versions.first()
-            return version.check_modify.as_bool(request.user)
+            return version and version.check_modify.as_bool(request.user)
         return True
 
     @admin.action(description=_("Enable comments for selection"))

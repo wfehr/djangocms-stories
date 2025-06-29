@@ -10,31 +10,10 @@ djangocms_versioning_installed = apps.is_installed("djangocms_versioning")
 
 class StoriesCMSConfig(CMSAppConfig):
     cms_enabled = True
-    cms_toolbar_enabled_models = [(PostContent, ToolbarDetailView.as_view())]
+    cms_toolbar_enabled_models = [(PostContent, ToolbarDetailView.as_view(), "post")]
     djangocms_versioning_enabled = (
         getattr(settings, "VERSIONING_BLOG_MODELS_ENABLED", True) and djangocms_versioning_installed
     )
-
-    @property
-    def cms_wizards(self):
-        from django.utils.translation import gettext
-        from django.utils.functional import lazy
-
-        from .cms_appconfig import StoriesConfig
-        from .cms_wizards import PostWizard, PostWizardForm
-
-        for item, config in enumerate(StoriesConfig.objects.all().order_by("namespace"), start=1):
-            seed = f"Story{item}Wizard"
-            new_wizard = type(str(seed), (PostWizard,), {})
-            new_form = type("{}Form".format(seed), (PostWizardForm,), {"default_appconfig": config.pk})
-            yield new_wizard(
-                title=lazy(lambda config=config: gettext("New {0}").format(config.object_name), str)(),
-                weight=200,
-                form=new_form,
-                model=PostContent,
-                description=lazy(lambda config=config: gettext("Create a new {0} in {1}").format(config.object_name, config.app_title), str)(),
-            )
-
     if djangocms_versioning_enabled:
         from packaging.version import Version as PackageVersion
         from cms.utils.i18n import get_language_tuple
@@ -57,3 +36,24 @@ class StoriesCMSConfig(CMSAppConfig):
                 copy_function=default_copy,
             ),
         ]
+
+    @property
+    def cms_wizards(self):
+        from django.utils.translation import gettext
+        from django.utils.functional import lazy
+
+        from .cms_appconfig import StoriesConfig
+        from .cms_wizards import PostWizard, PostWizardForm
+
+        for item, config in enumerate(StoriesConfig.objects.all().order_by("namespace"), start=1):
+            seed = f"Story{item}Wizard"
+            new_wizard = type(str(seed), (PostWizard,), {})
+            new_form = type("{}Form".format(seed), (PostWizardForm,), {"default_appconfig": config.pk})
+            yield new_wizard(
+                title=lazy(lambda config=config: gettext("New {0}").format(config.object_name), str)(),
+                weight=200,
+                form=new_form,
+                model=PostContent,
+                description=lazy(lambda config=config: gettext("Create a new {0} in {1}").format(config.object_name, config.app_title), str)(),
+            )
+
