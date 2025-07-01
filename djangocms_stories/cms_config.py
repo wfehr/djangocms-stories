@@ -12,7 +12,7 @@ class StoriesCMSConfig(CMSAppConfig):
     cms_enabled = True
     cms_toolbar_enabled_models = [(PostContent, ToolbarDetailView.as_view(), "post")]
     djangocms_versioning_enabled = (
-        getattr(settings, "VERSIONING_BLOG_MODELS_ENABLED", True) and djangocms_versioning_installed
+        getattr(settings, "VERSIONING_BLOG_MODELS_ENABLED", djangocms_versioning_installed)
     )
     if djangocms_versioning_enabled:
         from packaging.version import Version as PackageVersion

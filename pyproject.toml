@@ -1,7 +1,7 @@
 [build-system]
-build-backend = "hatchling.build"
+build-backend = "setuptools.build_meta"
 
-requires = [ "hatchling" ]
+requires = [ "setuptools", "setuptools-scm" ]
 
 [project]
 name = "djangocms-stories"
@@ -21,7 +21,6 @@ classifiers = [
   "Framework :: Django :: 5.2",
   "Framework :: Django CMS :: 4.1",
   "Framework :: Django CMS :: 5.0",
-  "License :: OSI Approved :: BSD License",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -67,14 +66,15 @@ urls.Homepage = "https://github.com/django-cms/djangocms-stories"
 
 urls.Issues = "https://github.com/fsbraun/djangocms-stories/issues"
 
-[tool.hatch.version]
-path = "djangocms_stories/__init__.py"
+[tool.setuptools.dynamic]
+version = { attr = "djangocms_stories.__version__" }
 
-[tool.hatch.build.targets.sdist]
-include = [
-  "/djangocms_blog",
-  "/djangocms_stories",
-]
+[tool.setuptools.package-data]
+djangocms_stories = [ "static/**/*", "templates/**/*", "locale/**/*", "LICENSE", "README.rst" ]
+exclude = [ "**/bundles/" ]
+
+[tool.setuptools]
+packages = [ "djangocms_stories", "djangocms_blog" ]
 
 [tool.black]
 line-length = 119
