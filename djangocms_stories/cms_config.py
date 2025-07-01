@@ -1,6 +1,7 @@
 from cms.app_base import CMSAppConfig
 from django.apps import apps
 from django.conf import settings
+from django.db import OperationalError
 
 from .models import PostContent
 from .views import ToolbarDetailView
@@ -45,15 +46,22 @@ class StoriesCMSConfig(CMSAppConfig):
         from .cms_appconfig import StoriesConfig
         from .cms_wizards import PostWizard, PostWizardForm
 
-        for item, config in enumerate(StoriesConfig.objects.all().order_by("namespace"), start=1):
-            seed = f"Story{item}Wizard"
-            new_wizard = type(str(seed), (PostWizard,), {})
-            new_form = type("{}Form".format(seed), (PostWizardForm,), {"default_appconfig": config.pk})
-            yield new_wizard(
-                title=lazy(lambda config=config: gettext("New {0}").format(config.object_name), str)(),
-                weight=200,
-                form=new_form,
-                model=PostContent,
-                description=lazy(lambda config=config: gettext("Create a new {0} in {1}").format(config.object_name, config.app_title), str)(),
-            )
+        def generator():
+            try:
+                for item, config in enumerate(StoriesConfig.objects.all().order_by("namespace"), start=1):
+                    seed = f"Story{item}Wizard"
+                    new_wizard = type(str(seed), (PostWizard,), {})
+                    new_form = type("{}Form".format(seed), (PostWizardForm,), {"default_appconfig": config.pk})
+                    yield new_wizard(
+                        title=lazy(lambda config=config: gettext("New {0}").format(config.object_name), str)(),
+                        weight=200,
+                        form=new_form,
+                        model=PostContent,
+                        description=lazy(lambda config=config: gettext("Create a new {0} in {1}").format(config.object_name, config.app_title), str)(),
+                    )
+            except OperationalError:
+                # This can happen if, e.g., migrations have not been executed yet.
+                # In that case, we return an empty list.
+                return []
 
+        return lazy(generator, list)()

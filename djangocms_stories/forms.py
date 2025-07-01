@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from parler.forms import TranslatableModelForm
 from taggit_autosuggest.widgets import TagAutoSuggest
 
-from .models import PostCategory, PostContent, StoriesConfig, Post
-from .settings import PERMALINK_TYPE_CATEGORY, get_setting
+from .models import PostCategory, StoriesConfig
+from .settings import get_setting
 
 User = get_user_model()
 
