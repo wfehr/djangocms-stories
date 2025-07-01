@@ -1,10 +1,11 @@
 from cms.app_base import CMSAppConfig
 from django.apps import apps
 from django.conf import settings
-from django.db import OperationalError
+from django.db import DatabaseError
 
 from .models import PostContent
 from .views import ToolbarDetailView
+
 
 djangocms_versioning_installed = apps.is_installed("djangocms_versioning")
 
@@ -12,9 +13,7 @@ djangocms_versioning_installed = apps.is_installed("djangocms_versioning")
 class StoriesCMSConfig(CMSAppConfig):
     cms_enabled = True
     cms_toolbar_enabled_models = [(PostContent, ToolbarDetailView.as_view(), "post")]
-    djangocms_versioning_enabled = (
-        getattr(settings, "VERSIONING_BLOG_MODELS_ENABLED", djangocms_versioning_installed)
-    )
+    djangocms_versioning_enabled = getattr(settings, "VERSIONING_BLOG_MODELS_ENABLED", djangocms_versioning_installed)
     if djangocms_versioning_enabled:
         from packaging.version import Version as PackageVersion
         from cms.utils.i18n import get_language_tuple
@@ -57,9 +56,14 @@ class StoriesCMSConfig(CMSAppConfig):
                         weight=200,
                         form=new_form,
                         model=PostContent,
-                        description=lazy(lambda config=config: gettext("Create a new {0} in {1}").format(config.object_name, config.app_title), str)(),
+                        description=lazy(
+                            lambda config=config: gettext("Create a new {0} in {1}").format(
+                                config.object_name, config.app_title
+                            ),
+                            str,
+                        )(),
                     )
-            except OperationalError:
+            except DatabaseError:  # pragma: no cover
                 # This can happen if, e.g., migrations have not been executed yet.
                 # In that case, we return an empty list.
                 return []
