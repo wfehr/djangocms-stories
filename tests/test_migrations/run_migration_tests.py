@@ -69,6 +69,15 @@ def test_post_category_assignment():
     assert set(story1.categories.all()) == {cat2, cat3}
     assert set(story2.categories.all()) == {cat1}
 
+def test_related_posts():
+    from djangocms_stories.models import Post
+
+    story1, story2 = Post.objects.all()[:2]
+
+    assert story1.related.count() == 0, "Story 1 should have no related posts"
+    assert story2.related.count() == 1, "Story 2 should have one related post"
+    assert story2.related.first().pk == story1.pk, "Story 2 should be related to Story 1"
+
 
 def test_tag_assignment():
     from djangocms_stories.models import Post
@@ -106,6 +115,9 @@ def setup_blog_testproj():
     from django.apps import apps
     from django.contrib.auth import get_user_model
     from django.contrib.auth.models import Group
+    from django.contrib.contenttypes.models import ContentType
+
+    from djangocms_versioning.models import Version
 
     from fixtures import (
         generate_config,
@@ -149,6 +161,8 @@ def setup_blog_testproj():
     post_en1.save()
     post_fr1.save()
     post2, post_en2, post_fr2 = generate_blog(config2, user, author=user)
+    post2.related.add(post1)
+
 
     cat1 = generate_category(config2, name="Category 1", slug="category-1")
     cat2 = generate_category(config2, name="Category 2", slug="category-2")
@@ -181,7 +195,7 @@ def setup_blog_testproj():
     page.application_namespace = config1.namespace
     page.save()
 
-    post_en1.versions.first().publish(user=user)
+    Version.objects.filter(content_type=ContentType.objects.get_for_model(post_en1), object_id=post_en1.pk).first().publish(user=user)
 
     return config1, config2, post1, post_en1, post_fr1, post2, post_en2, post_fr2
 
