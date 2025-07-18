@@ -195,12 +195,35 @@ def migrate_from_blog_to_stories(apps, schema_editor):
             model.objects.bulk_update(objs_to_update, ["content_type", "object_id"])
 
     # 6. Drop all djangocms_blog tables from the database
+    print("# 6. Drop all djangocms_blog tables from the database")
+
     with schema_editor.connection.cursor() as cursor:
         tables = schema_editor.connection.introspection.table_names(cursor)
-        blog_tables = [t for t in tables if t.startswith("djangocms_blog_")]
-        for table in blog_tables:
+        blog_m2n_tables = [t for t in tables if t.startswith("djangocms_blog_") and t.count("_") > 2]
+        blog_plugin_tables = [t for t in tables if t.startswith("djangocms_blog_") and t.endswith("plugin") and t.count("_") <= 2]
+        blog_other_tables = [t for t in tables if t.startswith("djangocms_blog_") and t not in (blog_m2n_tables + blog_plugin_tables)]
+        blog_ordered_other_tables = [
+            'djangocms_blog_blogcategory',
+            'djangocms_blog_postcontent',
+            'djangocms_blog_post',
+            'djangocms_blog_blogconfig',
+        ]
+        for table in blog_m2n_tables:
+            cursor.execute(f'DROP TABLE IF EXISTS "{table}";')
+        for table in blog_plugin_tables:
+            cursor.execute(f'DROP TABLE IF EXISTS "{table}";')
+        for table in blog_ordered_other_tables:
+            cursor.execute(f'DROP TABLE IF EXISTS "{table}";')
+            if table in blog_other_tables:
+                blog_other_tables.remove(table)
+        # Drop remaining blog tables if any
+        for table in blog_other_tables:
             cursor.execute(f'DROP TABLE IF EXISTS "{table}";')
 
+    # 7. Remove djangocms_blog migration records
+    print("# 7. Remove djangocms_blog migration records")
+    recorder = MigrationRecorder(schema_editor.connection)
+    recorder.migration_qs.filter(app="djangocms_blog").delete()
 
 def adjust_apphooks(apps, schema_editor):
     Page = apps.get_model("cms", "Page")
