@@ -3,6 +3,8 @@ import re
 import pytest
 
 from .fixtures import default_config  # noqa: F401
+from .fixtures import many_posts  # noqa: F401
+from .fixtures import page_with_menu  # noqa: F401
 from .fixtures import post  # noqa: F401
 from .fixtures import post_content  # noqa: F401
 from .fixtures import simple_w_placeholder  # noqa: F401

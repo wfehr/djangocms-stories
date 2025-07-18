@@ -10,7 +10,6 @@ PERMALINK_TYPE_SLUG = "slug"
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def simple_w_placeholder(db):
     activate("en")
     return StoriesConfig.objects.using(db).create(
@@ -24,7 +23,6 @@ def simple_w_placeholder(db):
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def simple_wo_placeholder(db):
     activate("en")
     return StoriesConfig.objects.using(db).create(
@@ -35,6 +33,5 @@ def simple_wo_placeholder(db):
         use_placeholder=False,
         template_prefix="",
     )
-
 
 default_config = simple_w_placeholder
