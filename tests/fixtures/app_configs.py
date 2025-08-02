@@ -29,7 +29,7 @@ def simple_wo_placeholder(db):
         namespace="test_ns_wo_placeholder",
         app_title="Test Stories Without Placeholder",
         object_name="Short story",
-        url_patterns=PERMALINK_TYPE_FULL_DATE,
+        url_patterns=PERMALINK_TYPE_CATEGORY,
         use_placeholder=False,
         template_prefix="",
     )

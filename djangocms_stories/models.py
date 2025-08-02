@@ -32,7 +32,7 @@ from taggit_autosuggest.managers import TaggableManager
 from .cms_appconfig import StoriesConfig
 from .fields import slugify
 from .managers import AdminManager, GenericDateTaggedManager, SiteManager
-from .settings import get_setting
+from .settings import BLOG_PLUGIN_TEMPLATE_FOLDERS as DEFAULT_TEMPLATE_FOLDERS, get_setting
 
 BLOG_CURRENT_POST_IDENTIFIER = get_setting("CURRENT_POST_IDENTIFIER")
 BLOG_CURRENT_NAMESPACE = get_setting("CURRENT_NAMESPACE")
@@ -430,7 +430,6 @@ class Post(models.Model):
     def get_absolute_url(self, language=None):
         lang = language or translation.get_language()
         with translation.override(lang):
-            category = self.categories.first()
             kwargs = {}
             current_date = self.date
             urlconf = get_setting("PERMALINK_URLS")[self.app_config.url_patterns]
@@ -445,6 +444,7 @@ class Post(models.Model):
                 if kwargs["slug"] is None:
                     return ""
             if "<slug:category>" in urlconf or "<str:category>" in urlconf:
+                category = self.categories.first()
                 kwargs["category"] = category.safe_translation_getter("slug", language_code=lang, any_language=True)  # NOQA
                 if kwargs["category"] is None:
                     return ""
@@ -647,12 +647,16 @@ class BasePostPlugin(CMSPlugin):
         max_length=200,
         verbose_name=_("Plugin layout"),
         help_text=_("Select plugin layout to load for this instance"),
-        default=BLOG_PLUGIN_TEMPLATE_FOLDERS[0][0],
-        choices=BLOG_PLUGIN_TEMPLATE_FOLDERS,
+        default=DEFAULT_TEMPLATE_FOLDERS[0][0],
+        choices=DEFAULT_TEMPLATE_FOLDERS,
     )
 
     class Meta:
         abstract = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._meta.get_field("template_folder").choices = BLOG_PLUGIN_TEMPLATE_FOLDERS
 
     def optimize(self, qs):
         """
