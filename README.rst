@@ -73,6 +73,8 @@ process - nevertheless be sure to backup your database before proceeding.
 4. Run ``./manage.py migrate djangocms_stories``. This in migration 0002 will move existing content
    from djangocms-blog to djangocms-stories and delete djangocms-blogs database tables.
 5. Remove ``"djangocms_blog"`` from your installed apps.
+6. To be on the safe side, check that the app hooks in the advanced settings your blog pages have been
+   updated.
 
 **Custom templates will need manual updating**, since the underlying model structure has changed:
 
