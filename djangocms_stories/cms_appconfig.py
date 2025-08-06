@@ -122,8 +122,6 @@ class StoriesConfig(TranslatableModel):
         max_length=12,
         verbose_name=_("Permalink structure"),
         blank=True,
-        default=config_defaults["url_patterns"],
-        choices=get_setting("AVAILABLE_PERMALINK_STYLES"),
     )
     #: Use placeholder and plugins for article body (default: :ref:`USE_PLACEHOLDER <USE_PLACEHOLDER>`)
     use_placeholder = models.BooleanField(
@@ -145,13 +143,11 @@ class StoriesConfig(TranslatableModel):
     #: Set author by default (default: :ref:`AUTHOR_DEFAULT <AUTHOR_DEFAULT>`)
     set_author = models.BooleanField(
         verbose_name=_("Set author by default"),
-        default=config_defaults["set_author"],
     )
     #: When paginating list views, how many articles per page? (default: :ref:`PAGINATION <PAGINATION>`)
     paginate_by = models.SmallIntegerField(
         verbose_name=_("Paginate size"),
         null=True,
-        default=config_defaults["paginate_by"],
         help_text=_("When paginating list views, how many articles per page?"),
     )
     #: Alternative directory to load the stories templates from (default: "")
@@ -165,23 +161,18 @@ class StoriesConfig(TranslatableModel):
     #: Menu structure (default: ``MENU_TYPE_COMPLETE``, see :ref:`MENU_TYPES <MENU_TYPES>`)
     menu_structure = models.CharField(
         max_length=200,
-        choices=get_setting("MENU_TYPES"),
-        default=MENU_TYPE_COMPLETE,
         verbose_name=_("Menu structure"),
         help_text=_("Structure of the django CMS menu"),
     )
     #: Show empty categories in menu (default: :ref:`MENU_EMPTY_CATEGORIES <MENU_EMPTY_CATEGORIES>`)
     menu_empty_categories = models.BooleanField(
         verbose_name=_("Show empty categories in menu"),
-        default=get_setting("MENU_EMPTY_CATEGORIES"),
         help_text=_("Show categories with no post attached in the menu"),
     )
     #: Sitemap changefreq (default: :ref:`SITEMAP_CHANGEFREQ_DEFAULT <SITEMAP_CHANGEFREQ_DEFAULT>`,
     #: see: :ref:`SITEMAP_CHANGEFREQ <SITEMAP_CHANGEFREQ>`)
     sitemap_changefreq = models.CharField(
         max_length=12,
-        choices=get_setting("SITEMAP_CHANGEFREQ"),
-        default=get_setting("SITEMAP_CHANGEFREQ_DEFAULT"),
         verbose_name=_("Sitemap changefreq"),
         help_text=_("Changefreq attribute for sitemap items"),
     )
@@ -189,7 +180,6 @@ class StoriesConfig(TranslatableModel):
     sitemap_priority = models.DecimalField(
         decimal_places=3,
         max_digits=5,
-        default=get_setting("SITEMAP_PRIORITY_DEFAULT"),
         verbose_name=_("Sitemap priority"),
         help_text=_("Priority attribute for sitemap items"),
     )
@@ -197,8 +187,6 @@ class StoriesConfig(TranslatableModel):
     object_type = models.CharField(
         max_length=200,
         blank=True,
-        choices=get_setting("TYPES"),
-        default=get_setting("TYPE"),
         verbose_name=_("Object type"),
     )
     #: Facebook type (default: :ref:`FB_TYPE <FB_TYPE>`, see :ref:`FB_TYPES <FB_TYPES>`)
@@ -206,64 +194,42 @@ class StoriesConfig(TranslatableModel):
         max_length=200,
         verbose_name=_("Facebook type"),
         blank=True,
-        choices=get_setting("FB_TYPES"),
-        default=get_setting("FB_TYPE"),
     )
     #: Facebook application ID (default: :ref:`FB_PROFILE_ID <FB_PROFILE_ID>`)
-    og_app_id = models.CharField(
-        max_length=200, verbose_name=_("Facebook application ID"), blank=True, default=get_setting("FB_PROFILE_ID")
-    )
+    og_app_id = models.CharField(max_length=200, verbose_name=_("Facebook application ID"), blank=True)
     #: Facebook profile ID (default: :ref:`FB_PROFILE_ID <FB_PROFILE_ID>`)
-    og_profile_id = models.CharField(
-        max_length=200, verbose_name=_("Facebook profile ID"), blank=True, default=get_setting("FB_PROFILE_ID")
-    )
+    og_profile_id = models.CharField(max_length=200, verbose_name=_("Facebook profile ID"), blank=True)
     #: Facebook page URL (default: :ref:`FB_PUBLISHER <FB_PUBLISHER>`)
-    og_publisher = models.CharField(
-        max_length=200, verbose_name=_("Facebook page URL"), blank=True, default=get_setting("FB_PUBLISHER")
-    )
+    og_publisher = models.CharField(max_length=200, verbose_name=_("Facebook page URL"), blank=True)
     #: Facebook author URL (default: :ref:`FB_AUTHOR_URL <FB_AUTHOR_URL>`)
-    og_author_url = models.CharField(
-        max_length=200, verbose_name=_("Facebook author URL"), blank=True, default=get_setting("FB_AUTHOR_URL")
-    )
+    og_author_url = models.CharField(max_length=200, verbose_name=_("Facebook author URL"), blank=True)
     #: Facebook author (default: :ref:`FB_AUTHOR <FB_AUTHOR>`)
-    og_author = models.CharField(
-        max_length=200, verbose_name=_("Facebook author"), blank=True, default=get_setting("FB_AUTHOR")
-    )
+    og_author = models.CharField(max_length=200, verbose_name=_("Facebook author"), blank=True)
     #: Twitter type field (default: :ref:`TWITTER_TYPE <TWITTER_TYPE>`)
     twitter_type = models.CharField(
         max_length=200,
         verbose_name=_("Twitter type"),
         blank=True,
-        choices=get_setting("TWITTER_TYPES"),
-        default=get_setting("TWITTER_TYPE"),
     )
     #: Twitter site handle (default: :ref:`TWITTER_SITE <TWITTER_SITE>`)
-    twitter_site = models.CharField(
-        max_length=200, verbose_name=_("Twitter site handle"), blank=True, default=get_setting("TWITTER_SITE")
-    )
+    twitter_site = models.CharField(max_length=200, verbose_name=_("Twitter site handle"), blank=True)
     #: Twitter author handle (default: :ref:`TWITTER_AUTHOR <TWITTER_AUTHOR>`)
-    twitter_author = models.CharField(
-        max_length=200, verbose_name=_("Twitter author handle"), blank=True, default=get_setting("TWITTER_AUTHOR")
-    )
+    twitter_author = models.CharField(max_length=200, verbose_name=_("Twitter author handle"), blank=True)
     #: Schema.org object type (default: :ref:`SCHEMAORG_TYPE <SCHEMAORG_TYPE>`)
     gplus_type = models.CharField(
         max_length=200,
         verbose_name=_("Schema.org type"),
         blank=True,
-        choices=get_setting("SCHEMAORG_TYPES"),
-        default=get_setting("SCHEMAORG_TYPE"),
     )
     #: Schema.org author name abstract field (default: :ref:`SCHEMAORG_AUTHOR <SCHEMAORG_AUTHOR>`)
-    gplus_author = models.CharField(
-        max_length=200, verbose_name=_("Schema.org author name"), blank=True, default=get_setting("SCHEMAORG_AUTHOR")
-    )
-    #: Send notifications on post update. Require channels integration
+    gplus_author = models.CharField(max_length=200, verbose_name=_("Schema.org author name"), blank=True)
+    #: Send notifications on post update. Requires channels integration
     send_knock_create = models.BooleanField(
         verbose_name=_("Send notifications on post publish"),
         default=False,
         help_text=_("Emits a desktop notification -if enabled- when publishing a new post"),
     )
-    #: Send notifications on post update. Require channels integration
+    #: Send notifications on post update. Requires channels integration
     send_knock_update = models.BooleanField(
         verbose_name=_("Send notifications on post update"),
         default=False,
@@ -297,6 +263,25 @@ class StoriesConfig(TranslatableModel):
             return f"{self.namespace}: {self.get_app_title()} / {self.object_name}"
         except Exception as e:
             return str(e)
+
+    def __init__(self, *args, **kwargs):
+        """
+        Initialize the StoriesConfig instance.
+        """
+        # Set defaults
+        for name, default in config_defaults.items():
+            self._meta.get_field(name).default = default
+
+        # Set choices for fields that have choices defined in settings
+        self._meta.get_field("url_patterns").choices = get_setting("AVAILABLE_PERMALINK_STYLES")
+        self._meta.get_field("menu_structure").choices = get_setting("MENU_TYPES")
+        self._meta.get_field("sitemap_changefreq").choices = get_setting("SITEMAP_CHANGEFREQ")
+        self._meta.get_field("object_type").choices = get_setting("TYPES")
+        self._meta.get_field("og_type").choices = get_setting("FB_TYPES")
+        self._meta.get_field("twitter_type").choices = get_setting("TWITTER_TYPES")
+        self._meta.get_field("gplus_type").choices = get_setting("SCHEMAORG_TYPES")
+
+        super().__init__(*args, **kwargs)
 
 
 def get_app_instance(request):
