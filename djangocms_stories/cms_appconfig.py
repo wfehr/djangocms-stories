@@ -93,8 +93,8 @@ class StoriesConfig(TranslatableModel):
         unique=True,
     )
     translations = TranslatedFields(
-        app_title=models.CharField(_("application title"), max_length=200, default=get_setting("AUTO_APP_TITLE")),
-        object_name=models.CharField(_("object name"), max_length=200, default=get_setting("DEFAULT_OBJECT_NAME")),
+        app_title=models.CharField(_("application title"), max_length=200, default="+"),
+        object_name=models.CharField(_("object name"), max_length=200, default="+"),
     )
 
     #: Default size of full images
@@ -263,25 +263,6 @@ class StoriesConfig(TranslatableModel):
             return f"{self.namespace}: {self.get_app_title()} / {self.object_name}"
         except Exception as e:
             return str(e)
-
-    def __init__(self, *args, **kwargs):
-        """
-        Initialize the StoriesConfig instance.
-        """
-        # Set defaults
-        for name, default in config_defaults.items():
-            self._meta.get_field(name).default = default
-
-        # Set choices for fields that have choices defined in settings
-        self._meta.get_field("url_patterns").choices = get_setting("AVAILABLE_PERMALINK_STYLES")
-        self._meta.get_field("menu_structure").choices = get_setting("MENU_TYPES")
-        self._meta.get_field("sitemap_changefreq").choices = get_setting("SITEMAP_CHANGEFREQ")
-        self._meta.get_field("object_type").choices = get_setting("TYPES")
-        self._meta.get_field("og_type").choices = get_setting("FB_TYPES")
-        self._meta.get_field("twitter_type").choices = get_setting("TWITTER_TYPES")
-        self._meta.get_field("gplus_type").choices = get_setting("SCHEMAORG_TYPES")
-
-        super().__init__(*args, **kwargs)
 
 
 def get_app_instance(request):

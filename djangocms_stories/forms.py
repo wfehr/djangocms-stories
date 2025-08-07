@@ -62,7 +62,7 @@ class CategoryAdminForm(ConfigFormBase, TranslatableModelForm):
 
 
 class BlogPluginForm(forms.ModelForm):
-    """Base plugin form to inject the list of configured template folders from BLOG_PLUGIN_TEMPLATE_FOLDERS."""
+    """Base plugin form to inject the list of configured template folders from STORIES_PLUGIN_TEMPLATE_FOLDERS."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -89,6 +89,7 @@ class AuthorPostsForm(BlogPluginForm):
         # apply distinct due to django issue #11707
         self.fields["authors"].queryset = User.objects.filter(djangocms_stories_post_author__publish=True).distinct()
 
+
 class AppConfigForm(forms.Form):
     app_config = forms.ModelChoiceField(
         queryset=StoriesConfig.objects.all(),
@@ -99,3 +100,37 @@ class AppConfigForm(forms.Form):
     language = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     fieldsets = [(None, {"fields": ("app_config", "language")})]
+
+
+class StoriesConfigForm(TranslatableModelForm):
+    """Form for StoriesConfig model."""
+
+    class Meta:
+        model = StoriesConfig
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        """
+        Initialize the StoriesConfigForm instance with defaults and choices.
+        """
+        from .cms_appconfig import config_defaults
+
+        kwargs.setdefault("initial", {})
+
+        # Set defaults
+        for name, default in config_defaults.items():
+            kwargs["initial"].setdefault(name, default)
+
+        kwargs["initial"].setdefault("app_title", get_setting("AUTO_APP_TITLE"))
+        kwargs["initial"].setdefault("object_name", get_setting("DEFAULT_OBJECT_NAME"))
+
+        super().__init__(*args, **kwargs)
+
+        # Set choices for fields that have choices defined in settings
+        self.fields["url_patterns"].choices = get_setting("AVAILABLE_PERMALINK_STYLES")
+        self.fields["menu_structure"].choices = get_setting("MENU_TYPES")
+        self.fields["sitemap_changefreq"].choices = get_setting("SITEMAP_CHANGEFREQ")
+        self.fields["object_type"].choices = get_setting("TYPES")
+        self.fields["og_type"].choices = get_setting("FB_TYPES")
+        self.fields["twitter_type"].choices = get_setting("TWITTER_TYPES")
+        self.fields["gplus_type"].choices = get_setting("SCHEMAORG_TYPES")

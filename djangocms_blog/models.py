@@ -36,8 +36,8 @@ from .settings import get_setting
 
 BLOG_CURRENT_POST_IDENTIFIER = get_setting("CURRENT_POST_IDENTIFIER")
 BLOG_CURRENT_NAMESPACE = get_setting("CURRENT_NAMESPACE")
-BLOG_PLUGIN_TEMPLATE_FOLDERS = get_setting("PLUGIN_TEMPLATE_FOLDERS")
-BLOG_ALLOW_UNICODE_SLUGS = get_setting("ALLOW_UNICODE_SLUGS")
+BLOG_PLUGIN_TEMPLATE_FOLDERS = (('plugins', 'Default template'),)
+BLOG_ALLOW_UNICODE_SLUGS = True
 
 
 thumbnail_model = f"{ThumbnailOption._meta.app_label}.{ThumbnailOption.__name__}"
@@ -301,7 +301,7 @@ class Post(KnockerModel, models.Model):
         null=True,
     )
     enable_comments = models.BooleanField(
-        verbose_name=_("enable comments on post"), default=get_setting("ENABLE_COMMENTS")
+        verbose_name=_("enable comments on post"), default=True
     )
     sites = models.ManyToManyField(
         "sites.Site",
@@ -704,7 +704,7 @@ class BasePostPlugin(CMSPlugin):
 class LatestPostsPlugin(BasePostPlugin):
     latest_posts = models.IntegerField(
         _("entries"),
-        default=get_setting("LATEST_POSTS"),
+        default=5,
         help_text=_("The number of latests entries to be displayed."),
     )
     tags = TaggableManager(
@@ -746,7 +746,7 @@ class AuthorEntriesPlugin(BasePostPlugin):
     )
     latest_posts = models.IntegerField(
         _("entries"),
-        default=get_setting("LATEST_POSTS"),
+        default=5,
         help_text=_("The number of author entries to be displayed."),
     )
 

@@ -1,8 +1,8 @@
 from cms.app_base import CMSAppConfig
 from django.apps import apps
-from django.conf import settings
 from django.db import DatabaseError
 
+from .settings import get_setting
 from .models import PostContent
 from .views import ToolbarDetailView
 
@@ -13,8 +13,7 @@ djangocms_versioning_installed = apps.is_installed("djangocms_versioning")
 class StoriesCMSConfig(CMSAppConfig):
     cms_enabled = True
     cms_toolbar_enabled_models = [(PostContent, ToolbarDetailView.as_view(), "post")]
-    djangocms_versioning_enabled = getattr(settings, "VERSIONING_BLOG_MODELS_ENABLED", djangocms_versioning_installed)
-    if djangocms_versioning_enabled:
+    if get_setting("VERSIONING_ENABLED") and djangocms_versioning_installed:
         from packaging.version import Version as PackageVersion
         from cms.utils.i18n import get_language_tuple
         from djangocms_versioning import __version__ as djangocms_versioning_version
@@ -50,7 +49,7 @@ class StoriesCMSConfig(CMSAppConfig):
                 for item, config in enumerate(StoriesConfig.objects.all().order_by("namespace"), start=1):
                     seed = f"Story{item}Wizard"
                     new_wizard = type(str(seed), (PostWizard,), {})
-                    new_form = type("{}Form".format(seed), (PostWizardForm,), {"default_appconfig": config.pk})
+                    new_form = type(f"{seed}Form", (PostWizardForm,), {"default_appconfig": config.pk})
                     yield new_wizard(
                         title=lazy(lambda config=config: gettext("New {0}").format(config.object_name), str)(),
                         weight=200,

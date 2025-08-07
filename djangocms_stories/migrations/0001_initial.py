@@ -233,8 +233,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('language_code', models.CharField(db_index=True, max_length=15, verbose_name='Language')),
-                ('app_title', models.CharField(default='blog', max_length=200, verbose_name='application title')),
-                ('object_name', models.CharField(default='Article', max_length=200, verbose_name='object name')),
+                ('app_title', models.CharField(default='+', max_length=200, verbose_name='application title')),
+                ('object_name', models.CharField(default='+', max_length=200, verbose_name='object name')),
                 ('master', parler.fields.TranslationsForeignKey(editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='translations', to='djangocms_stories.storiesconfig')),
             ],
             options={
