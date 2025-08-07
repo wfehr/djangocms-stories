@@ -144,7 +144,7 @@ class PostCategory(PostMetaMixin, ModelMeta, TranslatableModel):
         ),
         meta_description=models.TextField(verbose_name=_("category meta description"), blank=True, default=""),
         meta={"unique_together": (("language_code", "slug"),)},
-        abstract=HTMLField(_("abstract"), blank=True, default="", configuration="STORIES_ABSTRACT_CKEDITOR"),
+        abstract=HTMLField(_("abstract"), blank=True, default="", configuration="STORIES_ABSTRACT_EDITOR_CONF"),
     )
 
     _metadata = {
@@ -569,7 +569,7 @@ class PostContent(PostMetaMixin, ModelMeta, models.Model):
         blank=True,
         default="",
     )
-    post_text = HTMLField(_("text"), default="", blank=True, configuration="STORIES_POST_TEXT_CKEDITOR")
+    post_text = HTMLField(_("text"), default="", blank=True, configuration="STORIES_POST_TEXT_EDITOR_CONF")
     placeholders = PlaceholderRelationField()
 
     objects = SiteManager()

@@ -13,7 +13,8 @@ djangocms_versioning_installed = apps.is_installed("djangocms_versioning")
 class StoriesCMSConfig(CMSAppConfig):
     cms_enabled = True
     cms_toolbar_enabled_models = [(PostContent, ToolbarDetailView.as_view(), "post")]
-    if get_setting("VERSIONING_ENABLED") and djangocms_versioning_installed:
+    djangocms_versioning_enabled = get_setting("VERSIONING_ENABLED") and djangocms_versioning_installed
+    if djangocms_versioning_enabled:
         from packaging.version import Version as PackageVersion
         from cms.utils.i18n import get_language_tuple
         from djangocms_versioning import __version__ as djangocms_versioning_version

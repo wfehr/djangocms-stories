@@ -23,6 +23,8 @@ def check_settings(*args, **kwargs):
         blog_settings["BLOG_ABSTRACT_CKEDITOR"] = "STORIES_ABSTRACT_EDITOR_CONFIG"
     if "BLOG_POST_TEXT_CKEDITOR" in blog_settings:
         blog_settings["BLOG_POST_TEXT_CKEDITOR"] = "STORIES_POST_TEXT_EDITOR_CONFIG"
+    if "VERSIONING_BLOG_MODELS_ENABLED" in blog_settings:
+        blog_settings["VERSIONING_BLOG_MODELS_ENABLED"] = "STORIES_VERSIONING_ENABLED"
 
     for setting, stories_setting in blog_settings.items():
         if stories_setting in params:
