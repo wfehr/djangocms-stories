@@ -5,14 +5,14 @@ from django.utils.translation import activate, override
 def test_apphook_migration():
     from cms.models import Page
 
-    assert not Page.objects.filter(application_urls="BlogConfig").exists(), (
+    assert not Page.objects.filter(application_urls="BlogApp").exists(), (
         "BlogConfig apphook should not exist in the database"
     )
-    assert Page.objects.filter(application_urls="StoriesConfig").exists(), (
+    assert Page.objects.filter(application_urls="StoriesApp").exists(), (
         "StoriesConfig apphook should exist in the database"
     )
 
-    page = Page.objects.get(application_urls="StoriesConfig", application_namespace="blog1")
+    page = Page.objects.get(application_urls="StoriesApp", application_namespace="blog1")
     assert page.get_admin_content("en").title == "Test Page", "The page title should be 'Test Page'"
 
 

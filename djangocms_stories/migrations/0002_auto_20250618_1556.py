@@ -228,8 +228,11 @@ def migrate_from_blog_to_stories(apps, schema_editor):
 def adjust_apphooks(apps, schema_editor):
     Page = apps.get_model("cms", "Page")
 
+    print()
+    print("# 8. Adjust apphooks")
+
     Page.objects.filter(application_urls="BlogApp").update(
-        application_urls="StoriesConfig"
+        application_urls="StoriesApp"
     )
 
 
