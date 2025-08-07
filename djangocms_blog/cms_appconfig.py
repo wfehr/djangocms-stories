@@ -20,7 +20,7 @@ config_defaults = {
     "menu_structure": MENU_TYPE_COMPLETE,
     "menu_empty_categories": True,
     "sitemap_changefreq": "monthly",
-    "sitemap_priority": 0.5,
+    "sitemap_priority": "0.5",
     "object_type": "article",
     "og_type": "article",
     "og_app_id": None,
@@ -32,7 +32,7 @@ config_defaults = {
     "twitter_site": None,
     "twitter_author": None,
     "gplus_type": None,
-    "gplus_author": None,
+    "gplus_author": "get_author_schemaorg",
     "send_knock_create": False,
     "send_knock_update": False,
 }
@@ -123,12 +123,12 @@ class BlogConfig(TranslatableModel):
         verbose_name=_("Permalink structure"),
         blank=True,
         default=config_defaults["url_patterns"],
-        choices=(
-            ('full_date', 'Full date'),
-            ('short_date', 'Year / Month'),
-            ('category', 'Category'),
-            ('slug', 'Just slug')
-        ),
+        choices=[
+            ("full_date", "Full date"),
+            ("short_date", "Year /  Month"),
+            ("category", "Category"),
+            ("slug", "Just slug"),
+        ],
     )
     #: Use placeholder and plugins for article body (default: :ref:`USE_PLACEHOLDER <USE_PLACEHOLDER>`)
     use_placeholder = models.BooleanField(
@@ -207,7 +207,7 @@ class BlogConfig(TranslatableModel):
     sitemap_priority = models.DecimalField(
         decimal_places=3,
         max_digits=5,
-        default=0.5,
+        default="0.5",
         verbose_name=_("Sitemap priority"),
         help_text=_("Priority attribute for sitemap items"),
     )
@@ -293,7 +293,7 @@ class BlogConfig(TranslatableModel):
     )
     #: Schema.org author name abstract field (default: :ref:`SCHEMAORG_AUTHOR <SCHEMAORG_AUTHOR>`)
     gplus_author = models.CharField(
-        max_length=200, verbose_name=_("Schema.org author name"), blank=True, default=''
+        max_length=200, verbose_name=_("Schema.org author name"), blank=True, default='get_author_schemaorg'
     )
     #: Send notifications on post update. Require channels integration
     send_knock_create = models.BooleanField(
