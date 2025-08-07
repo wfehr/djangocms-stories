@@ -3,7 +3,7 @@ Changelog
 =========
 
 
-0.6.3 (2025-08-07)
+0.7.0 (2025-08-08)
 ------------------
 
 **Fixed**
@@ -15,6 +15,7 @@ Changelog
 **Changed**
 
 * Updated README
+* Naming of settings to start with `STORIES_*` instead of `BLOG_*`
 
 **Added**
 
