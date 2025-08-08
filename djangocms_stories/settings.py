@@ -375,7 +375,7 @@ STORIES_PERMALINK_URLS = PERMALINKS_URLS
 URLConf corresponding to :ref:`STORIES_AVAILABLE_PERMALINK_STYLES <AVAILABLE_PERMALINK_STYLES>`.
 """
 
-STORIES_DEFAULT_OBJECT_NAME = "Article"
+STORIES_DEFAULT_OBJECT_NAME = _("Article")
 """
 .. _DEFAULT_OBJECT_NAME:
 
@@ -396,14 +396,14 @@ STORIES_AUTO_HOME_TITLE = "Home"
 Title of the home page created by :ref:`auto_setup`.
 """
 
-STORIES_AUTO_BLOG_TITLE = "blog"
+STORIES_AUTO_BLOG_TITLE = _("Blog")
 """
 .. _AUTO_STORIES_TITLE:
 
 Title of the blog page created by :ref:`auto_setup`.
 """
 
-STORIES_AUTO_APP_TITLE = "blog"
+STORIES_AUTO_APP_TITLE = _("Blog")
 """
 .. _AUTO_APP_TITLE:
 

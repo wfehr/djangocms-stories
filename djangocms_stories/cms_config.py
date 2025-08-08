@@ -2,6 +2,9 @@ from cms.app_base import CMSAppConfig
 from django.apps import apps
 from django.db import DatabaseError
 
+from cms.utils import get_current_site
+from cms.utils.i18n import get_language_tuple
+
 from .settings import get_setting
 from .models import PostContent
 from .views import ToolbarDetailView
@@ -16,7 +19,6 @@ class StoriesCMSConfig(CMSAppConfig):
     djangocms_versioning_enabled = get_setting("VERSIONING_ENABLED") and djangocms_versioning_installed
     if djangocms_versioning_enabled:
         from packaging.version import Version as PackageVersion
-        from cms.utils.i18n import get_language_tuple
         from djangocms_versioning import __version__ as djangocms_versioning_version
         from djangocms_versioning.datastructures import default_copy, VersionableItem
 
@@ -31,7 +33,9 @@ class StoriesCMSConfig(CMSAppConfig):
                 content_model=PostContent,
                 grouper_field_name="post",
                 extra_grouping_fields=["language"],
-                version_list_filter_lookups={"language": get_language_tuple},
+                version_list_filter_lookups={
+                    "language": lambda request, _: get_language_tuple(site_id=get_current_site(request).pk)
+                },
                 grouper_selector_option_label=lambda obj, lang: obj.get_title(lang),
                 copy_function=default_copy,
             ),

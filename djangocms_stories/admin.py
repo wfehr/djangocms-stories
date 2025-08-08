@@ -722,10 +722,10 @@ class ConfigAdmin(TranslatableAdmin):
                     "classes": ("collapse",),
                 },
             ),
-            (
-                _("Notifications"),
-                {"fields": ("send_knock_create", "send_knock_update"), "classes": ("collapse",)},
-            ),
+            # (
+            #     _("Notifications"),
+            #     {"fields": ("send_knock_create", "send_knock_update"), "classes": ("collapse",)},
+            # ),
             (
                 _("Sitemap"),
                 {

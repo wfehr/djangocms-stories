@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxLengthValidator
+from django.utils.encoding import force_str
 from django.utils.functional import cached_property
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, override
 from parler.forms import TranslatableModelForm
 from taggit_autosuggest.widgets import TagAutoSuggest
 
@@ -120,9 +121,9 @@ class StoriesConfigForm(TranslatableModelForm):
         # Set defaults
         for name, default in config_defaults.items():
             kwargs["initial"].setdefault(name, default)
-
-        kwargs["initial"].setdefault("app_title", get_setting("AUTO_APP_TITLE"))
-        kwargs["initial"].setdefault("object_name", get_setting("DEFAULT_OBJECT_NAME"))
+        with override(self.language_code):
+            kwargs["initial"].setdefault("app_title", force_str(get_setting("AUTO_APP_TITLE")))
+            kwargs["initial"].setdefault("object_name", force_str(get_setting("DEFAULT_OBJECT_NAME")))
 
         super().__init__(*args, **kwargs)
 
