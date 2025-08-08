@@ -20,7 +20,7 @@ class StoriesPlugin(CMSPluginBase):
         """
         Return the fields available when editing the plugin.
 
-        'template_folder' field is added if ``BLOG_PLUGIN_TEMPLATE_FOLDERS`` contains multiple folders.
+        'template_folder' field is added if ``STORIES_PLUGIN_TEMPLATE_FOLDERS`` contains multiple folders.
 
         """
         fields = self.fields

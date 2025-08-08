@@ -123,3 +123,5 @@ STATIC_URL = "/static/"
 
 
 TESTS_RUNNING = True
+
+STORIES_SCHEMAORG_TYPES = ()

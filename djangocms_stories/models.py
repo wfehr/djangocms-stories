@@ -32,12 +32,12 @@ from taggit_autosuggest.managers import TaggableManager
 from .cms_appconfig import StoriesConfig
 from .fields import slugify
 from .managers import AdminManager, GenericDateTaggedManager, SiteManager
-from .settings import get_setting
+from .settings import STORIES_PLUGIN_TEMPLATE_FOLDERS as DEFAULT_TEMPLATE_FOLDERS, get_setting
 
-BLOG_CURRENT_POST_IDENTIFIER = get_setting("CURRENT_POST_IDENTIFIER")
-BLOG_CURRENT_NAMESPACE = get_setting("CURRENT_NAMESPACE")
-BLOG_PLUGIN_TEMPLATE_FOLDERS = get_setting("PLUGIN_TEMPLATE_FOLDERS")
-BLOG_ALLOW_UNICODE_SLUGS = get_setting("ALLOW_UNICODE_SLUGS")
+STORIES_CURRENT_POST_IDENTIFIER = get_setting("CURRENT_POST_IDENTIFIER")
+STORIES_CURRENT_NAMESPACE = get_setting("CURRENT_NAMESPACE")
+STORIES_PLUGIN_TEMPLATE_FOLDERS = get_setting("PLUGIN_TEMPLATE_FOLDERS")
+STORIES_ALLOW_UNICODE_SLUGS = get_setting("ALLOW_UNICODE_SLUGS")
 
 
 thumbnail_model = f"{ThumbnailOption._meta.app_label}.{ThumbnailOption.__name__}"
@@ -140,11 +140,11 @@ class PostCategory(PostMetaMixin, ModelMeta, TranslatableModel):
             max_length=752,
             blank=True,
             db_index=True,
-            allow_unicode=BLOG_ALLOW_UNICODE_SLUGS,
+            allow_unicode=STORIES_ALLOW_UNICODE_SLUGS,
         ),
         meta_description=models.TextField(verbose_name=_("category meta description"), blank=True, default=""),
         meta={"unique_together": (("language_code", "slug"),)},
-        abstract=HTMLField(_("abstract"), blank=True, default="", configuration="BLOG_ABSTRACT_CKEDITOR"),
+        abstract=HTMLField(_("abstract"), blank=True, default="", configuration="STORIES_ABSTRACT_EDITOR_CONF"),
     )
 
     _metadata = {
@@ -430,7 +430,6 @@ class Post(models.Model):
     def get_absolute_url(self, language=None):
         lang = language or translation.get_language()
         with translation.override(lang):
-            category = self.categories.first()
             kwargs = {}
             current_date = self.date
             urlconf = get_setting("PERMALINK_URLS")[self.app_config.url_patterns]
@@ -445,6 +444,7 @@ class Post(models.Model):
                 if kwargs["slug"] is None:
                     return ""
             if "<slug:category>" in urlconf or "<str:category>" in urlconf:
+                category = self.categories.first()
                 kwargs["category"] = category.safe_translation_getter("slug", language_code=lang, any_language=True)  # NOQA
                 if kwargs["category"] is None:
                     return ""
@@ -556,10 +556,10 @@ class PostContent(PostMetaMixin, ModelMeta, models.Model):
         max_length=752,
         blank=True,
         db_index=True,
-        allow_unicode=BLOG_ALLOW_UNICODE_SLUGS,
+        allow_unicode=STORIES_ALLOW_UNICODE_SLUGS,
     )
     subtitle = models.CharField(verbose_name=_("subtitle"), max_length=767, blank=True, default="")
-    abstract = HTMLField(_("abstract"), blank=True, default="", configuration="BLOG_ABSTRACT_CKEDITOR")
+    abstract = HTMLField(_("abstract"), blank=True, default="", configuration="STORIES_ABSTRACT_CKEDITOR")
     meta_description = models.TextField(verbose_name=_("post meta description"), blank=True, default="")
     meta_keywords = models.TextField(verbose_name=_("post meta keywords"), blank=True, default="")
     meta_title = models.CharField(
@@ -569,7 +569,7 @@ class PostContent(PostMetaMixin, ModelMeta, models.Model):
         blank=True,
         default="",
     )
-    post_text = HTMLField(_("text"), default="", blank=True, configuration="BLOG_POST_TEXT_CKEDITOR")
+    post_text = HTMLField(_("text"), default="", blank=True, configuration="STORIES_POST_TEXT_EDITOR_CONF")
     placeholders = PlaceholderRelationField()
 
     objects = SiteManager()
@@ -647,12 +647,16 @@ class BasePostPlugin(CMSPlugin):
         max_length=200,
         verbose_name=_("Plugin layout"),
         help_text=_("Select plugin layout to load for this instance"),
-        default=BLOG_PLUGIN_TEMPLATE_FOLDERS[0][0],
-        choices=BLOG_PLUGIN_TEMPLATE_FOLDERS,
+        default=DEFAULT_TEMPLATE_FOLDERS[0][0],
+        choices=DEFAULT_TEMPLATE_FOLDERS,
     )
 
     class Meta:
         abstract = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._meta.get_field("template_folder").choices = STORIES_PLUGIN_TEMPLATE_FOLDERS
 
     def optimize(self, qs):
         """

@@ -40,6 +40,13 @@ class StoriesConfigFactory(DjangoModelFactory):
     namespace = factory.LazyFunction(lambda: str(uuid.uuid4()))
     use_placeholder = True  # Assuming default value, adjust as necessary
     url_patterns = PERMALINK_TYPE_FULL_DATE
+    set_author = True  # Assuming default value, adjust as necessary
+    menu_empty_categories = False  # Assuming default value, adjust as necessary
+    app_title = "Test Stories"
+    object_name = "Story"
+    template_prefix = ""
+    sitemap_priority = 0.5  # Assuming default value, adjust as necessary
+    sitemap_changefreq = "weekly"  # Assuming default value, adjust as necessary
 
 
 class PostCategoryFactory(DjangoModelFactory):

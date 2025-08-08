@@ -1,8 +1,11 @@
 from cms.app_base import CMSAppConfig
 from django.apps import apps
-from django.conf import settings
 from django.db import DatabaseError
 
+from cms.utils import get_current_site
+from cms.utils.i18n import get_language_tuple
+
+from .settings import get_setting
 from .models import PostContent
 from .views import ToolbarDetailView
 
@@ -13,10 +16,9 @@ djangocms_versioning_installed = apps.is_installed("djangocms_versioning")
 class StoriesCMSConfig(CMSAppConfig):
     cms_enabled = True
     cms_toolbar_enabled_models = [(PostContent, ToolbarDetailView.as_view(), "post")]
-    djangocms_versioning_enabled = getattr(settings, "VERSIONING_BLOG_MODELS_ENABLED", djangocms_versioning_installed)
+    djangocms_versioning_enabled = get_setting("VERSIONING_ENABLED") and djangocms_versioning_installed
     if djangocms_versioning_enabled:
         from packaging.version import Version as PackageVersion
-        from cms.utils.i18n import get_language_tuple
         from djangocms_versioning import __version__ as djangocms_versioning_version
         from djangocms_versioning.datastructures import default_copy, VersionableItem
 
@@ -31,7 +33,9 @@ class StoriesCMSConfig(CMSAppConfig):
                 content_model=PostContent,
                 grouper_field_name="post",
                 extra_grouping_fields=["language"],
-                version_list_filter_lookups={"language": get_language_tuple},
+                version_list_filter_lookups={
+                    "language": lambda request, _: get_language_tuple(site_id=get_current_site(request).pk)
+                },
                 grouper_selector_option_label=lambda obj, lang: obj.get_title(lang),
                 copy_function=default_copy,
             ),
@@ -50,7 +54,7 @@ class StoriesCMSConfig(CMSAppConfig):
                 for item, config in enumerate(StoriesConfig.objects.all().order_by("namespace"), start=1):
                     seed = f"Story{item}Wizard"
                     new_wizard = type(str(seed), (PostWizard,), {})
-                    new_form = type("{}Form".format(seed), (PostWizardForm,), {"default_appconfig": config.pk})
+                    new_form = type(f"{seed}Form", (PostWizardForm,), {"default_appconfig": config.pk})
                     yield new_wizard(
                         title=lazy(lambda config=config: gettext("New {0}").format(config.object_name), str)(),
                         weight=200,

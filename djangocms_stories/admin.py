@@ -23,7 +23,7 @@ from django.views.generic import RedirectView
 from parler.admin import TranslatableAdmin
 
 from .cms_config import StoriesCMSConfig
-from .forms import AppConfigForm, CategoryAdminForm
+from .forms import AppConfigForm, CategoryAdminForm, StoriesConfigForm
 from .models import PostCategory, StoriesConfig, Post, PostContent
 from .settings import get_setting
 from .utils import is_versioning_enabled
@@ -679,7 +679,8 @@ class PostContentAdmin(FrontendEditableAdminMixin, admin.ModelAdmin):
 
 @admin.register(StoriesConfig)
 class ConfigAdmin(TranslatableAdmin):
-    list_display = ("namespace", "app_title", "object_name", "object_type")
+    list_display = ("namespace", "app_title", "object_name")
+    form = StoriesConfigForm
 
     @property
     def declared_fieldsets(self):
@@ -721,10 +722,10 @@ class ConfigAdmin(TranslatableAdmin):
                     "classes": ("collapse",),
                 },
             ),
-            (
-                _("Notifications"),
-                {"fields": ("send_knock_create", "send_knock_update"), "classes": ("collapse",)},
-            ),
+            # (
+            #     _("Notifications"),
+            #     {"fields": ("send_knock_create", "send_knock_update"), "classes": ("collapse",)},
+            # ),
             (
                 _("Sitemap"),
                 {
