@@ -98,6 +98,8 @@ django-treebeard==4.7.1
     # via django-cms
 djangocms-admin-style==3.3.1
     # via django-cms
+djangocms-text==0.9.3
+    # via -r docs/requirements.in
 docstrfmt==1.11.1
     # via -r docs/requirements.in
 docutils==0.21.2
@@ -125,6 +127,7 @@ libcst==1.8.2
 lxml==6.0.1
     # via
     #   djangocms-stories
+    #   djangocms-text
     #   svglib
 markupsafe==3.0.2
     # via
@@ -132,16 +135,20 @@ markupsafe==3.0.2
     #   jinja2
 mypy-extensions==1.1.0
     # via black
+nh3==0.3.0
+    # via djangocms-text
 packaging==25.0
     # via
     #   black
     #   build
     #   django-cms
+    #   djangocms-text
     #   sphinx
 pathspec==0.12.1
     # via black
 pillow==11.3.0
     # via
+    #   djangocms-text
     #   easy-thumbnails
     #   reportlab
 pip-tools==7.5.0
