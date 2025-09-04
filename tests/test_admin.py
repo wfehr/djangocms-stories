@@ -19,7 +19,25 @@ def admin_client(admin_user):
     return client
 
 
-def test_config_admin(admin_client, default_config, assert_html_in_response):
+def test_config_admin_add(admin_client, assert_html_in_response):
+    url = reverse("admin:djangocms_stories_storiesconfig_add")
+    response = admin_client.get(url)
+    parler_language_selector = """
+        <div class="parler-language-tabs">
+        <input type="hidden" class="language_button selected" name="en" /><span class="current">English</span>
+        <span class="empty">
+            <a href="?language=it">Italiano</a></span><span class="empty">
+            <a href="?language=fr">French</a>
+        </span></div>"""
+    namespace_can_be_written = (
+        '<input type="text" name="namespace" class="vTextField" maxlength="100" required id="id_namespace">'
+    )
+
+    assert_html_in_response(parler_language_selector, response)
+    assert_html_in_response(namespace_can_be_written, response)
+
+
+def test_config_admin_change(admin_client, default_config, assert_html_in_response):
     url = reverse("admin:djangocms_stories_storiesconfig_change", args=[default_config.pk])
     response = admin_client.get(url)
     parler_language_selector = """
@@ -193,3 +211,19 @@ def test_post_change_admin(admin_client, default_config, assert_html_in_response
     assert_html_in_response(
         '<label class="required" for="id_content__title">Title (English):</label>', response
     )  # PostContent title field
+
+
+def test_category_add_admin(admin_client, assert_html_in_response):
+    url = reverse("admin:djangocms_stories_postcategory_add")
+    response = admin_client.get(url)
+
+    assert_html_in_response(
+        '<select name="app_config" required aria-describedby="id_app_config_helptext" id="id_app_config">', response
+    )
+
+
+def test_category_add_admin_with_config(admin_client, default_config, assert_html_in_response):
+    url = reverse("admin:djangocms_stories_postcategory_add") + f"?app_config={default_config.pk}"
+    response = admin_client.get(url)
+
+    assert_html_in_response('<input type="text" name="name" maxlength="752" required id="id_name">', response)
