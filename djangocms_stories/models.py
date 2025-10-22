@@ -149,6 +149,9 @@ class PostCategory(PostMetaMixin, ModelMeta, TranslatableModel):
 
     _metadata = {
         "title": "get_title",
+        "og_title": "get_title",
+        "twitter_title": "get_title",
+        "schemaorg_title": "get_title",
         "description": "get_description",
         "og_description": "get_description",
         "twitter_description": "get_description",
@@ -575,6 +578,9 @@ class PostContent(PostMetaMixin, ModelMeta, models.Model):
 
     _metadata = {
         "title": "get_title",
+        "og_title": "get_title",
+        "twitter_title": "get_title",
+        "schemaorg_title": "get_title",
         "description": "get_description",
         "keywords": "get_keywords",
         "og_description": "get_description",
