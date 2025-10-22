@@ -25,6 +25,8 @@ def test_post_detail_view(client, admin_user, post_content, assert_html_in_respo
     assert_html_in_response(
         f"<h4>{related_post.subtitle}</h4>", response
     )  # Subtitle appears in the related posts section
+    # meta:
+    assert_html_in_response(f'<meta name="description" content="{post_content.meta_description}">', response)
 
 
 @pytest.mark.django_db
