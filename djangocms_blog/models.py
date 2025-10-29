@@ -477,13 +477,6 @@ class Post(KnockerModel, models.Model):
                 return get_thumbnailer(self.main_image).get_thumbnail(thumbnail_options).height
             return self.main_image.height
 
-    def get_tags(self):
-        """
-        Returns the list of object tags as comma separated list
-        """
-        taglist = [tag.name for tag in self.tags.all()]
-        return ",".join(taglist)
-
     def get_author(self):
         """
         Return the author (user) objects
@@ -696,7 +689,7 @@ class PostContent(BlogMetaMixin, ModelMeta, models.Model):
         """
         Returns the list of object tags as comma separated list
         """
-        taglist = [tag.name for tag in self.tags.all()]
+        taglist = [tag.name for tag in self.post.tags.all()]
         return ",".join(taglist)
 
     def __str__(self):
