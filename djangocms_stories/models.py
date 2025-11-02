@@ -374,7 +374,7 @@ class Post(models.Model):
 
     def __str__(self):
         default = gettext("Post (no translation)")
-        return self.safe_translation_getter("title", any_language=True, default=default)
+        return self.safe_translation_getter("title", any_language=True, default=default, show_draft_content=True)
 
     @admin.display(boolean=True)
     def featured(self):
@@ -683,7 +683,11 @@ class BasePostPlugin(CMSPlugin):
 
     def post_content_queryset(self, request=None, selected_posts=None):
         language = translation.get_language()
-        if request and getattr(request, "toolbar", False) and request.toolbar.edit_mode_active:
+        if (
+            request
+            and getattr(request, "toolbar", False)
+            and (request.toolbar.edit_mode_active or request.toolbar.preview_mode_active)
+        ):
             post_contents = PostContent.admin_manager.latest_content()
         else:
             post_contents = PostContent.objects.all()
@@ -778,7 +782,12 @@ class FeaturedPostsPlugin(BasePostPlugin):
         self,
         request,
     ):
-        return self.post_content_queryset(request, selected_posts=self.posts.all())
+        posts = self.posts.all()
+        map = {
+            post_content.post_id: post_content
+            for post_content in self.post_content_queryset(request, selected_posts=posts)
+        }
+        return [map.get(post.pk) for post in posts if post.pk in map]
 
 
 class GenericBlogPlugin(BasePostPlugin):

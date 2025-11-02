@@ -22,11 +22,13 @@ def page_content(admin_user):
     page_content = PageContent.admin_manager.get(page=page, language="en")
     if apps.is_installed("djangocms_versioning"):
         from djangocms_versioning.models import Version
+        from djangocms_versioning.constants import PUBLISHED
 
-        Version.objects.get_or_create(
+        version, _ = Version.objects.get_or_create(
             content_type=ContentType.objects.get_for_model(page_content),
             object_id=page_content.pk,
             created_by=admin_user,
+            state=PUBLISHED,
         )
     return page_content
 
@@ -100,14 +102,12 @@ def test_blog_featured_posts_plugin(placeholder, admin_client, simple_w_placehol
     instance.posts.add(*[post_content.post for post_content in batch if random.choice([True, False])])
     instance.posts.add(batch[0].post)  # Ensure at least one post is featured
     featured = instance.posts.all()
-
     url = get_object_preview_url(placeholder.source)
 
     response = admin_client.get(url)
     assert_html_in_response("<p>TextPlugin works.</p>", response)
-
     for post_content in batch:
-        if post_content in featured:
+        if post_content.post in featured:
             assert_html_in_response(
                 post_content.title,
                 response,
@@ -117,6 +117,18 @@ def test_blog_featured_posts_plugin(placeholder, admin_client, simple_w_placehol
                 response,
             )
         else:
+            assert post_content.title not in response.content.decode("utf-8")
+
+    if apps.is_installed("djangocms_versioning"):
+        from django.test import Client
+
+        # No posts are published yet, so the featured posts should not appear on the site
+        url = placeholder.source.get_absolute_url("en")
+        response = Client().get(url)
+
+        assert response.status_code == 200
+        assert_html_in_response('<p class="blog-empty">No article found.</p>', response)
+        for post_content in batch:
             assert post_content.title not in response.content.decode("utf-8")
 
 
