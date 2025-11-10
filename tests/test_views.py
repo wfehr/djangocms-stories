@@ -38,7 +38,7 @@ def test_post_detail_view_meta(client, admin_user, post_content, assert_html_in_
     meta = post_content.as_meta(request)
 
     assert post_content.meta_title == meta.title
-    assert post_content.meta_keywords.split(",") == meta.keywords
+    assert [kw for kw in post_content.meta_keywords.split(",") if kw] == meta.keywords
     assert post_content.meta_description == meta.description
     assert post_content.get_image_full_url() == meta.image
     assert post_content.get_image_width() == meta.image_width
