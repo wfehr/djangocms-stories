@@ -31,23 +31,6 @@ def test_post_detail_view(client, admin_user, post_content, assert_html_in_respo
 
 
 @pytest.mark.django_db
-def test_post_detail_view_meta(client, admin_user, post_content, assert_html_in_response):
-    url = reverse("djangocms_stories:post-detail", kwargs={"slug": post_content.slug})
-    request = RequestFactory().get(url)
-
-    meta = post_content.as_meta(request)
-
-    assert post_content.meta_title == meta.title
-    assert [kw for kw in post_content.meta_keywords.split(",") if kw] == meta.keywords
-    assert post_content.meta_description == meta.description
-    assert post_content.get_image_full_url() == meta.image
-    assert post_content.get_image_width() == meta.image_width
-    assert post_content.get_image_height() == meta.image_height
-    assert post_content.get_image_height() == meta.date_modified
-    assert ",".join([t.name for t in post_content.tags.all()]) == meta.tag
-
-
-@pytest.mark.django_db
 def test_post_detail_endpoint(admin_client, admin_user, post_content):
     from cms.toolbar.utils import get_object_preview_url
 

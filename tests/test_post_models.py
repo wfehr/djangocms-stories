@@ -44,6 +44,14 @@ def test_base_fixture(post_content):
         assert post.guid == hashlib.sha256(force_bytes(f"-en-test-post-{post.app_config.namespace}-")).hexdigest()
         assert post.get_content(language="en", show_draft_content=False) == post_content
 
+    # PostContent properties
+    assert post_content.date_modified is post_content.post.date_modified
+    assert post_content.get_image_full_url() == ""
+    assert post_content.get_image_width() is None
+    assert post_content.get_image_height() is None
+    assert post_content.get_keywords() == []
+    assert post_content.get_tags() == ""
+
 
 @pytest.mark.django_db
 def test_post_content_compatibility_stubs(db, default_config):
@@ -130,6 +138,9 @@ def test_get_description(db):
     assert post_content_1.post.get_description() == "This is a test description."
     assert post_content_2.post.get_description() == "This is a test abstract."
 
+    assert post_content_1.get_description() == "This is a test description."
+    assert post_content_2.get_description() == "This is a test abstract."
+
 
 @pytest.mark.django_db
 def test_get_keywords(db):
@@ -141,6 +152,13 @@ def test_get_keywords(db):
 
     assert post_content_1.post.get_keywords() == []
     assert post_content_2.post.get_keywords() == [
+        "test",
+        "are these key words",
+        "or not",
+    ]
+
+    assert post_content_1.get_keywords() == []
+    assert post_content_2.get_keywords() == [
         "test",
         "are these key words",
         "or not",
