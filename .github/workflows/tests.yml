@@ -3,7 +3,7 @@ name: Run Tests and CodeCov
 on: 
   push:
     branches:
-      - main
+      - fix-meta
   pull_request:
 
 jobs:
